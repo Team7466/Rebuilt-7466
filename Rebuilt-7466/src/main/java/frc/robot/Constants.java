@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -14,6 +16,35 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int kDriverControllerPort = 1;
+    public static final int kOperatorControllerPort = 2;
   }
+
+  public static class DriveConstants {
+    public static final int leftMotor = 18; // CAN ID
+    public static final int leftFollower = 17; // CAN ID
+    public static final int rightMotor = 11; // CAN ID
+    public static final int rightFollower = 10; // CAN ID
+
+    public static final double trackWidthMeters = 0.533; // meters
+    public static final double gearRatio = 10.71428;
+    public static final double maxSpeed = 4.23; // meters per second
+    public static final double wheelCircumference = Units.inchesToMeters(5.97 * Math.PI);
+    public static final double velocityConversionFactor =
+        (1.0 / gearRatio) * (wheelCircumference) / 60.0;
+    public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
+  }
+  public static class ShooterConstants { //CAN ID leri rastgele değer
+    public static final int leftShooterMotor = 15; // CAN ID
+    public static final int rightShooterMotor = 14; // CAN ID
+    public static final int hoodMotor = 12; // CAN ID
+    public static final int leftEncoderA = 0; // DIO
+    public static final int leftEncoderB = 1; // DIO
+  }
+  public static class IntakeConstants {
+    public static final int intakeMotor = 13; // CAN ID
+    public static int beamBreak = 2; // DIO
+  }
+
+
 }

@@ -4,13 +4,22 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.DriveSubsystem;
+// import frc.robot.subsystems.Shooter;
+// import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,11 +29,23 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
+   private final CommandXboxController driverXbox =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+
+  private final CommandPS5Controller driverPS =
+      new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
+      private final CommandPS5Controller operatorPS =
+      new CommandPS5Controller(OperatorConstants.kOperatorControllerPort);
+
+  private final CommandXboxController operatorXbox =
+      new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  
+      
+  private double speed = 1.0;
+
+    SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
