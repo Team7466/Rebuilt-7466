@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -15,12 +19,15 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.studica.frc.AHRS.NavXUpdateRate;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final RelativeEncoder rightEncoder;
   private final DifferentialDriveKinematics kinematics;
   private RobotConfig config;
-  private DifferentialDrive robotDrive;
+  public DifferentialDrive robotDrive;
   private SparkMaxConfig globalConfig;
   private SparkMaxConfig rightConfig;
   private SparkMaxConfig leftFollowerConfig;
@@ -51,6 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
     kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.trackWidthMeters);
 
     // navX Micro using usb
+
     gyro = new AHRS(NavXComType.kUSB1, NavXUpdateRate.k50Hz);
 
     // All other subsystem initialization
@@ -74,41 +82,43 @@ public class DriveSubsystem extends SubsystemBase {
     robotDrive.setSafetyEnabled(false);
     robotDrive.setDeadband(0.04);
 
-    odometry =
+  
+
+   odometry =
         new DifferentialDriveOdometry(
             gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
 
     try {
-       config = RobotConfig.fromGUISettings(); //Bunu nasıl yapıldığına tekrar bakalım
+      config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
       e.printStackTrace();
     }
 
-     // Configure AutoBuilder last
-     AutoBuilder.configure(
-         this::getPose, // Robot pose supplier
-         this::resetPose, // Method to reset odometry
-         this::getCurrentSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-         (speeds, feedforwards) ->
-             drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
-         // Also optionally outputs individual module feedforwards
-         new PPLTVController(
-             0.02), // PPLTVController is the path following controller for differential drive
-         config, // The robot configuration
-         () -> {
-           // Boolean supplier that controls when the path will be mirrored for the red alliance
-           // This will flip the path being followed to the red side of the field.
-           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+        this::getPose, // Robot pose supplier
+        this::resetPose, // Method to reset odometry
+        this::getCurrentSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        (speeds, feedforwards) ->
+            drive(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds.
+        // Also optionally outputs individual module feedforwards
+        new PPLTVController(
+            0.02), // PPLTVController is the path following controller for differential drive
+        config, // The robot configuration
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-           var alliance = DriverStation.getAlliance();
-           if (alliance.isPresent()) {
-             return alliance.get() == DriverStation.Alliance.Red;
-           }
-           return false;
-         },
-         this // Reference to this subsystem to set requirements
-         );
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this // Reference to this subsystem to set requirements
+        );
   }
 
   public Pose2d getPose() {
@@ -185,19 +195,12 @@ public class DriveSubsystem extends SubsystemBase {
     rightFollowerConfig.apply(globalConfig).follow(rightMotor);
   }
 
-  /**
-   * Command to drive the robot
-   *
-   * @param xSpeed Drive power (throttle). Squared for smoother controls.
-   * @param zRotation Rotation in the z axis(around itself). Squared for smoother controls.
-   * @return Drive command.
-   */
-  public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-    return run(
-        () -> {
-          robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble(), true);
-        });
+  /** drive method for pathplanner */
+  public void stop() {
+    robotDrive.arcadeDrive(0,0);
   }
+
+
 
   /** drive method for pathplanner */
   public void drive(ChassisSpeeds speeds) {
@@ -207,8 +210,8 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public Command getAutonomousCommand(String string) {
-     return new PathPlannerAuto(string);
-   }
+    return new PathPlannerAuto(string);
+  }
 
   @Override
   public void periodic() {

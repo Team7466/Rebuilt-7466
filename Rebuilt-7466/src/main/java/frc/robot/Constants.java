@@ -29,22 +29,32 @@ public final class Constants {
     public static final double trackWidthMeters = 0.533; // meters
     public static final double gearRatio = 10.71428;
     public static final double maxSpeed = 4.23; // meters per second
+
     public static final double wheelCircumference = Units.inchesToMeters(5.97 * Math.PI);
     public static final double velocityConversionFactor =
         (1.0 / gearRatio) * (wheelCircumference) / 60.0;
     public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
   }
-  public static class ShooterConstants { //CAN ID leri rastgele değer
-    public static final int leftShooterMotor = 15; // CAN ID
-    public static final int rightShooterMotor = 14; // CAN ID
-    public static final int hoodMotor = 12; // CAN ID
-    public static final int leftEncoderA = 0; // DIO
-    public static final int leftEncoderB = 1; // DIO
+
+  public static class ElevatorConstants {
+    public static final double positionConversionFactor = 10.29; // cm per rotation;
+    public static final double velocityConversionFactor = 1.0;
+    public static final int elevMotor = 14; // CAN ID
+    public static final int elevFollower = 15; // CAN ID
   }
+
+  public static class EndEffectorConstants {
+    public static final int endEffectorMotor = 16; // CAN ID
+  }
+
   public static class IntakeConstants {
     public static final int intakeMotor = 13; // CAN ID
+    public static final double intakespeed = 1.0;
+
     public static int beamBreak = 2; // DIO
   }
 
-
+  public static class DealgaefierConstants {
+    public static final int dealgaefierMotor = 12; // CAN ID
+  }
 }
