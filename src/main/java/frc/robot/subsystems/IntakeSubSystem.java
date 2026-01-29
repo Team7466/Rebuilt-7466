@@ -26,7 +26,6 @@ public class IntakeSubSystem extends SubsystemBase {
      public IntakeSubSystem() {
     IntakeMotor = new SparkMax(IntakeConstants.intakeMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
-    debounce = new Debouncer(0.2, Debouncer.DebounceType.kRising);
     applyConfigs();
     setConfigs();
 

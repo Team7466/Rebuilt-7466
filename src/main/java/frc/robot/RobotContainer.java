@@ -9,23 +9,12 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubSystem;
 
 import frc.robot.commands.DriveCommand;
-
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPLTVController;
-
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import com.pathplanner.lib.config.RobotConfig;
 
 
 
@@ -42,23 +31,12 @@ public class RobotContainer {
 DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
 
 IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
-  private double speed = 1.0;
-
-private void pathplannercommand(){
-   NamedCommands.registerCommand(
-        "Intakerun",
-        m_IntakeSubSystem
-            .run(() -> m_IntakeSubSystem.Intakesetspeed(1)));
-
-
-}
+  private double speed = 0.5;
 
 
 
-   
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -75,14 +53,11 @@ private void pathplannercommand(){
   public RobotContainer() {
 
 
-    SmartDashboard.putData("Auto Chooser", m_chooser);
 
-       pathplannercommand();
+
        m_DriveSubsystem.setDefaultCommand(
-        new DriveCommand(m_DriveSubsystem,() -> -driverXbox.getLeftX() * speed, () -> driverXbox.getLeftY())
+        new DriveCommand(m_DriveSubsystem,() -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX())
         );
-
-      
 
     
 
@@ -105,23 +80,16 @@ private void pathplannercommand(){
    */
   private void configureBindings() {
       
-  driverPS.R1()
-    .whileTrue(Commands.run(() -> speed = 0.6));
+  driverPS.R2()
+    .whileTrue(Commands.run(() -> speed = 0.3));
 
 driverPS.R1()
-    .onFalse(Commands.run(() -> speed = 1.0));
-   driverPS.L1().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakesetspeed(1)));  // motor düzüne
-      driverPS.L2().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakesetspeed(-1))); // motor tersine
-      driverPS.L2().whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor tersine
-      driverPS.L1().whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor durdur
+    .onFalse(Commands.run(() -> speed = 0.5));
+   driverPS.L1().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakesetspeed(Constants.IntakeConstants.intakespeed)));  // motor düzüne
+   driverPS.L1().whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor durdur
 
   }
 
-
-  
-  public Command getAutonomousCommand() {
-    return m_chooser.getSelected();
-  }
  
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
