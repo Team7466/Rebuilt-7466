@@ -33,7 +33,7 @@ DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
 IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
 
-  private double speed = 1.0;
+  private double speed = 0.5;
 
 
 
@@ -56,7 +56,7 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
 
        m_DriveSubsystem.setDefaultCommand(
-        new DriveCommand(m_DriveSubsystem,() -> -driverXbox.getLeftY() * speed, () -> driverXbox.getRightX())
+        new DriveCommand(m_DriveSubsystem,() -> -driverPS.getLeftY() * speed, () -> driverPS.getRightX())
         );
 
     
