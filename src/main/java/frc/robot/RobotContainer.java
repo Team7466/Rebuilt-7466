@@ -56,7 +56,11 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
 
        m_DriveSubsystem.setDefaultCommand(
+<<<<<<< HEAD
         new DriveCommand(m_DriveSubsystem,() -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX())
+=======
+        new DriveCommand(m_DriveSubsystem,() -> -driverPS.getLeftY() * speed, () -> driverPS.getRightX())
+>>>>>>> 3dabe7b9cd106446694c45ee86bed20e26f26433
         );
 
     
