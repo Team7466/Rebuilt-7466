@@ -56,10 +56,8 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
 
        m_DriveSubsystem.setDefaultCommand(
-        new DriveCommand(m_DriveSubsystem,() -> -driverXbox.getLeftY() * speed, () -> driverXbox.getLeftX())
+        new DriveCommand(m_DriveSubsystem,() -> -driverXbox.getLeftY() * speed, () -> driverXbox.getRightX())
         );
-
-      
 
     
 

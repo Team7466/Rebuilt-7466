@@ -21,8 +21,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int leftMotor = 18; // CAN ID
-    public static final int leftFollower = 17; // CAN ID
+    public static final int leftMotor = 14; // CAN ID
+    public static final int leftFollower = 15; // CAN ID
     public static final int rightMotor = 11; // CAN ID
     public static final int rightFollower = 10; // CAN ID
 
@@ -39,8 +39,8 @@ public final class Constants {
   public static class ElevatorConstants {
     public static final double positionConversionFactor = 10.29; // cm per rotation;
     public static final double velocityConversionFactor = 1.0;
-    public static final int elevMotor = 14; // CAN ID
-    public static final int elevFollower = 15; // CAN ID
+    public static final int elevMotor = 20; // CAN ID
+    public static final int elevFollower = 21; // CAN ID
   }
 
   public static class EndEffectorConstants {
