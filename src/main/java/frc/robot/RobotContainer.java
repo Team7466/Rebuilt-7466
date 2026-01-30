@@ -4,19 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubSystem;
-
-import frc.robot.commands.DriveCommand;
-import edu.wpi.first.wpilibj.drive.RobotDriveBase;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubSystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,18 +19,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-
-
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
+  DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
 
-IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
-
+  IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
   private double speed = 0.5;
-
-
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
@@ -43,7 +33,7 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
 
   public static final CommandPS5Controller driverPS =
       new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
-  public  static final CommandPS5Controller operatorPS =
+  public static final CommandPS5Controller operatorPS =
       new CommandPS5Controller(OperatorConstants.kOperatorControllerPort);
 
   public final CommandXboxController operatorXbox =
@@ -52,18 +42,11 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-
-
-
-       m_DriveSubsystem.setDefaultCommand(
-        new DriveCommand(m_DriveSubsystem,() -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX())
-        );
-
-    
+    m_DriveSubsystem.setDefaultCommand(
+        new DriveCommand(
+            m_DriveSubsystem, () -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX()));
 
     // Setup auto chooser
-
-
 
     // Configure the trigger bindings
     configureBindings();
@@ -79,25 +62,25 @@ IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
    * joysticks}.
    */
   private void configureBindings() {
-      
-  driverPS.R2()
-    .whileTrue(Commands.run(() -> speed = 0.3));
 
-driverPS.R1()
-    .onFalse(Commands.run(() -> speed = 0.5));
-   driverPS.L1().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakesetspeed(Constants.IntakeConstants.intakespeed)));  // motor düzüne
-   driverPS.L1().whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor durdur
+    driverPS.R2().whileTrue(Commands.run(() -> speed = 0.3));
 
+    driverPS.R1().onFalse(Commands.run(() -> speed = 0.5));
+    driverPS
+        .L1()
+        .whileTrue(
+            m_IntakeSubSystem.run(
+                () ->
+                    m_IntakeSubSystem.Intakesetspeed(
+                        Constants.IntakeConstants.intakespeed))); // motor düzüne
+    driverPS
+        .L1()
+        .whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor durdur
   }
 
- 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
-
 }
-
-
-

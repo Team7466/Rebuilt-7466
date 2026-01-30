@@ -36,20 +36,16 @@ public final class Constants {
     public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
   }
 
-
   public static class ShooterConstants {
     public static final int Shootermotor = 13; // CAN ID
-
-
   }
+
   public static class ElevatorConstants {
     public static final double positionConversionFactor = 10.29; // cm per rotation;
     public static final double velocityConversionFactor = 1.0;
     public static final int elevMotor = 20; // CAN ID
     public static final int elevFollower = 21; // CAN ID
-
   }
-
 
   public static class IntakeConstants {
     public static final int intakeMotor = 12; // CAN ID
@@ -57,6 +53,4 @@ public final class Constants {
 
     public static int beamBreak = 2; // DIO
   }
-
-
 }

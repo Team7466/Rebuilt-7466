@@ -1,9 +1,8 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
+import java.util.function.DoubleSupplier;
 
 public class DriveCommand extends Command {
 
@@ -11,11 +10,7 @@ public class DriveCommand extends Command {
   private final DoubleSupplier xSpeed;
   private final DoubleSupplier zRotation;
 
-  public DriveCommand(
-      DriveSubsystem drive,
-      DoubleSupplier xSpeed,
-      DoubleSupplier zRotation
-  ) {
+  public DriveCommand(DriveSubsystem drive, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
     this.drive = drive;
     this.xSpeed = xSpeed;
     this.zRotation = zRotation;
@@ -25,10 +20,7 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    drive.robotDrive.arcadeDrive(
-        xSpeed.getAsDouble(),
-        zRotation.getAsDouble()
-    );
+    drive.robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble());
   }
 
   @Override
