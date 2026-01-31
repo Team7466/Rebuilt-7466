@@ -30,7 +30,7 @@ public class FeederSubsystem extends SubsystemBase {
   /** Set parameters for the SPARK. */
   private void setConfigs() {
     motorConfig
-        .smartCurrentLimit(50)
+        .smartCurrentLimit(60)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.15)
         .voltageCompensation(12.0);
@@ -54,12 +54,12 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void feederShoot() {
 
-    feederMotor.set(-1.0);
+    feederMotor.set(-0.75);
   }
 
   public void feederIntake() {
 
-    feederMotor.set(1.0);
+    feederMotor.set(0.95);
   }
 
   public void feederStop() {

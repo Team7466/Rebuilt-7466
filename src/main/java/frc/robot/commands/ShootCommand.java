@@ -28,7 +28,7 @@ public class ShootCommand extends Command {
   @Override
   public void execute() {
       fuelSubsystem.run(() -> fuelSubsystem.fuelSetSpeed(0.5))
-      .withTimeout(1.0)
+      .withTimeout(0.5)
       .andThen(feederSubsystem.run(() -> feederSubsystem.feederShoot()))
       .alongWith(fuelSubsystem.run(() -> fuelSubsystem.fuelShoot()));
   }

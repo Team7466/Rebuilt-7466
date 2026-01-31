@@ -31,9 +31,9 @@ public class FuelSubsystem extends SubsystemBase {
   /** Set parameters for the SPARK. */
   private void setConfigs() {
     motorConfig
-        .smartCurrentLimit(50)
-        .idleMode(IdleMode.kBrake)
-        .openLoopRampRate(0.15)
+        .smartCurrentLimit(60)
+        .idleMode(IdleMode.kCoast)
+        .openLoopRampRate(0.20)
         .voltageCompensation(12.0);
 
     motorConfig
@@ -59,10 +59,10 @@ public class FuelSubsystem extends SubsystemBase {
   }
 
   public void fuelShoot() {
-    fuelMotor.set(0.83);
+    fuelMotor.set(0.81);
   }
 
   public void fuelIntake() {
-    fuelMotor.set(0.83);
+    fuelMotor.set(0.75);
   }
 }
