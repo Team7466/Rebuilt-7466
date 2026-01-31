@@ -27,7 +27,7 @@ public class RobotContainer {
   IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
   ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
 
-  private double speed = 0.5;
+  private double speed = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
@@ -68,9 +68,9 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driverPS.R2().whileTrue(Commands.run(() -> speed = 0.3));
+    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
 
-    driverPS.R1().onFalse(Commands.run(() -> speed = 0.5));
+    driverPS.R1().onFalse(Commands.run(() -> speed = 1.0));
     driverPS
         .L1()
         .whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.6))); // motor
