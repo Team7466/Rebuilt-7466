@@ -170,7 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     globalConfig
         .encoder
-        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
+        .velocityConversionFactor(1)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
     globalConfig
@@ -208,10 +208,14 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Display the applied output of the left and right side onto the dashboard
-    SmartDashboard.putNumber("Left Out", leftMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Right Out", rightMotor.getAppliedOutput());
-    SmartDashboard.putNumber("Left Speed", leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Right Speed", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("LEFT 1 POWER", leftMotor.getAppliedOutput());
+    SmartDashboard.putNumber("LEFT 2 POWER", leftMotorFollower.getAppliedOutput());
+    SmartDashboard.putNumber("RIGHT POWER", rightMotor.getAppliedOutput());
+    SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
+    SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("sol sıcaklık", leftMotor.getMotorTemperature());
+    SmartDashboard.putNumber("sag sıcaklık", rightMotor.getMotorTemperature());
     // This method will be called once per scheduler run
   }
 }
