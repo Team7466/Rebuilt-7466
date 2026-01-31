@@ -20,7 +20,7 @@ public class DriveCommand extends Command {
 
   @Override
   public void execute() {
-    drive.robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble());
+    drive.robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble(), true);
   }
 
   @Override
