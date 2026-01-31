@@ -10,18 +10,18 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.FeederConstants;
 
-public class ShooterSubsystem extends SubsystemBase {
-  private final SparkMax shooterMotor;
+public class FeederSubsystem extends SubsystemBase {
+  private final SparkMax feederMotor;
   private SparkMaxConfig motorConfig;
 
   private DigitalInput beamBreak;
   private AnalogInput infraRed;
   Debouncer debounce;
 
-  public ShooterSubsystem() {
-    shooterMotor = new SparkMax(ShooterConstants.shooterMotor, MotorType.kBrushless);
+  public FeederSubsystem() {
+    feederMotor = new SparkMax(FeederConstants.feederMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
     setConfigs();
     applyConfigs();
@@ -43,17 +43,17 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private void applyConfigs() {
-    shooterMotor.configure(
+    feederMotor.configure(
         motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void shooterSetSpeed(double speed) {
+  public void feederSetSpeed(double speed) {
 
-    shooterMotor.set(speed);
+    feederMotor.set(speed);
   }
 
-  public void shooterStop() {
+  public void feederStop() {
 
-    shooterMotor.set(0.0);
+    feederMotor.set(0.0);
   }
 }

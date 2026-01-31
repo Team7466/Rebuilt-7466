@@ -10,10 +10,10 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.FuelConstants;
 
-public class IntakeSubSystem extends SubsystemBase {
-  private final SparkMax intakeMotor;
+public class FuelSubSystem extends SubsystemBase {
+  private final SparkMax fuelMotor;
   private SparkMaxConfig motorConfig;
   private SparkMaxConfig stopconfig;
 
@@ -21,8 +21,8 @@ public class IntakeSubSystem extends SubsystemBase {
   private AnalogInput infraRed;
   Debouncer debounce;
 
-  public IntakeSubSystem() {
-    intakeMotor = new SparkMax(IntakeConstants.intakeMotor, MotorType.kBrushless);
+  public FuelSubSystem() {
+    fuelMotor = new SparkMax(FuelConstants.fuelMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
     setConfigs();
     applyConfigs();
@@ -44,17 +44,17 @@ public class IntakeSubSystem extends SubsystemBase {
   }
 
   private void applyConfigs() {
-    intakeMotor.configure(
+    fuelMotor.configure(
         motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void intakeSetSpeed(double speed) {
+  public void fuelSetSpeed(double speed) {
 
-    intakeMotor.set(speed);
+    fuelMotor.set(speed);
   }
 
-  public void intakeStop() {
+  public void fuelStop() {
 
-    intakeMotor.set(0.0);
+    fuelMotor.set(0.0);
   }
 }

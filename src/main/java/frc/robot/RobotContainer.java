@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.IntakeSubSystem;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.FeederSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,10 +24,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
 
-  IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
-  ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
+  FuelSubsystem m_FuelSubsystem = new FuelSubsystem();
+  FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
 
-  private double speed = 1.0;
+  private double speed = 0.9;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
@@ -46,11 +46,11 @@ public class RobotContainer {
 
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
-            m_DriveSubsystem, () -> driverPS.getLeftY() * speed, () -> -driverPS.getRightX()));
-    m_IntakeSubSystem.setDefaultCommand(
-        m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeStop()));
-    m_ShooterSubsystem.setDefaultCommand(
-        m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.0)));
+            m_DriveSubsystem, () -> driverPS.getLeftY() * speed, () -> 0.8 * -driverPS.getRightX()));
+    m_FuelSubsystem.setDefaultCommand(
+        m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelStop()));
+    m_FeederSubsystem.setDefaultCommand(
+        m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(0.0)));
     // Setup auto chooser
 
     // Configure the trigger bindings
@@ -70,16 +70,16 @@ public class RobotContainer {
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
 
-    driverPS.R1().onFalse(Commands.run(() -> speed = 1.0));
-    driverPS.L1().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.83)));
-    driverPS.L1().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(1.0)));
+    driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
+    driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
+    driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
     
     
-    driverPS.circle().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.83)));
-    driverPS.circle().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(1.0)));// motor
+    driverPS.circle().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
+    driverPS.circle().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));// motor
 
-    driverPS.L2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(-1.0)));
-    driverPS.L2().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.83)));
+    driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
+    driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
 
 
 

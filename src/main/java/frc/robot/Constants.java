@@ -36,13 +36,13 @@ public final class Constants {
     public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
   }
 
-  public static class ShooterConstants {
-    public static final int shooterMotor = 13; // CAN ID
+  public static class FeederConstants {
+    public static final int feederMotor = 13; // CAN ID
   }
 
-  public static class IntakeConstants {
-    public static final int intakeMotor = 12; // CAN ID
-    public static final double intakespeed = 0.6;
+  public static class FuelConstants {
+    public static final int fuelMotor = 12; // CAN ID
+    public static final double fuelspeed = 0.6;
 
     public static int beamBreak = 2; // DIO
   }
