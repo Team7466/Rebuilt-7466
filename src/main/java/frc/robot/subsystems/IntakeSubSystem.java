@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubSystem extends SubsystemBase {
-  private final SparkMax IntakeMotor;
+  private final SparkMax intakeMotor;
   private SparkMaxConfig motorConfig;
   private SparkMaxConfig stopconfig;
 
@@ -22,17 +22,17 @@ public class IntakeSubSystem extends SubsystemBase {
   Debouncer debounce;
 
   public IntakeSubSystem() {
-    IntakeMotor = new SparkMax(IntakeConstants.intakeMotor, MotorType.kBrushless);
+    intakeMotor = new SparkMax(IntakeConstants.intakeMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
-    applyConfigs();
     setConfigs();
+    applyConfigs();
   }
 
   /** Set parameters for the SPARK. */
   private void setConfigs() {
     motorConfig
         .smartCurrentLimit(50)
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.15)
         .voltageCompensation(12.0);
 
@@ -43,23 +43,18 @@ public class IntakeSubSystem extends SubsystemBase {
         .primaryEncoderVelocityPeriodMs(20);
   }
 
-  private void stopconfig() {
-    stopconfig.idleMode(IdleMode.kBrake);
-  }
-
   private void applyConfigs() {
-    IntakeMotor.configure(
+    intakeMotor.configure(
         motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void Intakesetspeed(double speed) {
+  public void intakeSetSpeed(double speed) {
 
-    IntakeMotor.set(speed);
+    intakeMotor.set(speed);
   }
 
-  public void Intakestop() {
+  public void intakeStop() {
 
-    IntakeMotor.set(0);
-    stopconfig();
+    intakeMotor.set(0.0);
   }
 }
