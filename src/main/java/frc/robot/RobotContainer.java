@@ -46,7 +46,7 @@ public class RobotContainer {
 
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
-            m_DriveSubsystem, () -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX()));
+            m_DriveSubsystem, () -> driverPS.getLeftY() * speed, () -> -driverPS.getRightX()));
     m_IntakeSubSystem.setDefaultCommand(
         m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeStop()));
     m_ShooterSubsystem.setDefaultCommand(
