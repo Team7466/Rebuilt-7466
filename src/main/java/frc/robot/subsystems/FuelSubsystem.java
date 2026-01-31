@@ -57,4 +57,12 @@ public class FuelSubsystem extends SubsystemBase {
 
     fuelMotor.set(0.0);
   }
+
+  public void fuelShoot() {
+    fuelMotor.set(0.83);
+  }
+  
+  public void fuelIntake() {
+    fuelMotor.set(0.83);
+  }
 }

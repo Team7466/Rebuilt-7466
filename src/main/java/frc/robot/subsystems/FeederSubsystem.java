@@ -52,6 +52,16 @@ public class FeederSubsystem extends SubsystemBase {
     feederMotor.set(speed);
   }
 
+  public void feederShoot() {
+
+    feederMotor.set(-1.0);
+  }
+
+  public void feederIntake() {
+
+    feederMotor.set(1.0);
+  }
+
   public void feederStop() {
 
     feederMotor.set(0.0);

@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -47,10 +49,13 @@ public class RobotContainer {
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
             m_DriveSubsystem, () -> driverPS.getLeftY() * speed, () -> 0.8 * -driverPS.getRightX()));
+
     m_FuelSubsystem.setDefaultCommand(
         m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelStop()));
+
     m_FeederSubsystem.setDefaultCommand(
-        m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(0.0)));
+        m_FeederSubsystem.run(() -> m_FeederSubsystem.feederStop()));
+
     // Setup auto chooser
 
     // Configure the trigger bindings
@@ -69,17 +74,19 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
-
     driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
-    driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
-    driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
+
+    driverPS.L1().whileTrue(new IntakeCommand(m_FuelSubsystem, m_FeederSubsystem));
+    //driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83))); //intake 
+    //driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); //intake
     
     
     driverPS.circle().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
     driverPS.circle().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));// motor
 
-    driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
-    driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
+    driverPS.L2().whileTrue(new ShootCommand(m_FuelSubsystem, m_FeederSubsystem));
+    // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0))); //firlat 
+    // driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83))); //firlat
 
 
 
