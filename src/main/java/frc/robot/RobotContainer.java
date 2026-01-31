@@ -12,6 +12,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubSystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,6 +25,7 @@ public class RobotContainer {
   DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
 
   IntakeSubSystem m_IntakeSubSystem = new IntakeSubSystem();
+  ShooterSubsystem m_ShooterSubsystem = new ShooterSubsystem();
 
   private double speed = 0.5;
 
@@ -45,7 +47,10 @@ public class RobotContainer {
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
             m_DriveSubsystem, () -> -driverPS.getLeftY() * speed, () -> -driverPS.getRightX()));
-
+    m_IntakeSubSystem.setDefaultCommand(
+        m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeStop()));
+    m_ShooterSubsystem.setDefaultCommand(
+        m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.0)));
     // Setup auto chooser
 
     // Configure the trigger bindings
@@ -68,16 +73,10 @@ public class RobotContainer {
     driverPS.R1().onFalse(Commands.run(() -> speed = 0.5));
     driverPS
         .L1()
-        .whileTrue(
-            m_IntakeSubSystem.run(
-                () ->
-                    m_IntakeSubSystem.Intakesetspeed(
-                        Constants.IntakeConstants.intakespeed))); // motor düzüne
-    driverPS
-        .L1()
-        .whileFalse(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.Intakestop())); // motor durdur
-  }
+        .whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.6))); // motor
 
+    driverPS.L2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.7)));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
