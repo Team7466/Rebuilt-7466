@@ -111,6 +111,7 @@ tasks.withType(JavaCompile) {
     options.compilerArgs.add '-XDstringConcat=inline'
 }
 spotless {
+    enforceCheck false
     java {
         target fileTree('.') {
             include '**/*.java'

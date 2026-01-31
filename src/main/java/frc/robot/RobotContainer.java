@@ -13,8 +13,8 @@ import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.FuelSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
+import frc.robot.subsystems.FuelSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -48,7 +48,9 @@ public class RobotContainer {
 
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
-            m_DriveSubsystem, () -> driverPS.getLeftY() * speed, () -> 0.8 * -driverPS.getRightX()));
+            m_DriveSubsystem,
+            () -> driverPS.getLeftY() * speed,
+            () -> 0.8 * -driverPS.getRightX()));
 
     m_FuelSubsystem.setDefaultCommand(
         m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelStop()));
