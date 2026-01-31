@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.FuelConstants;
 
-public class FuelSubSystem extends SubsystemBase {
+public class FuelSubsystem extends SubsystemBase {
   private final SparkMax fuelMotor;
   private SparkMaxConfig motorConfig;
   private SparkMaxConfig stopconfig;
@@ -21,7 +21,7 @@ public class FuelSubSystem extends SubsystemBase {
   private AnalogInput infraRed;
   Debouncer debounce;
 
-  public FuelSubSystem() {
+  public FuelSubsystem() {
     fuelMotor = new SparkMax(FuelConstants.fuelMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
     setConfigs();
