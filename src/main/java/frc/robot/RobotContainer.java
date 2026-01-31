@@ -71,12 +71,12 @@ public class RobotContainer {
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
 
     driverPS.R1().onFalse(Commands.run(() -> speed = 1.0));
-    driverPS
-        .L1()
-        .whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.6))); // motor
+    driverPS.L1().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.6)));
+    driverPS.L1().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.7))); // motor
 
-    driverPS.L2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.7)));
-    driverPS.R2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(-0.7)));
+    driverPS.L2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(-1.0)));
+    driverPS.L2().whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(1.0)));
+
 
 
 
