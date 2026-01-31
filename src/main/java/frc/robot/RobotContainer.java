@@ -76,6 +76,10 @@ public class RobotContainer {
         .whileTrue(m_IntakeSubSystem.run(() -> m_IntakeSubSystem.intakeSetSpeed(0.6))); // motor
 
     driverPS.L2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(0.7)));
+    driverPS.R2().whileTrue(m_ShooterSubsystem.run(() -> m_ShooterSubsystem.shooterSetSpeed(-0.7)));
+
+
+
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
