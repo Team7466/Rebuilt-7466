@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
@@ -24,11 +28,13 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -88,6 +94,17 @@ public class DriveSubsystem extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
+    //Drivresubsystem SysID rutini
+   final SysIdRoutine m_SysIdRoutine= new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (voltage)->{
+          leftMotor.setVoltage(voltage.in(Volts));
+          rightMotor.setVoltage(voltage.in(Volts));
+        }, log->{
+          log.motor("drive-left").voltage(Volts.of(leftMotor.getAppliedOutput()*leftMotor.getBusVoltage())).linearPosition(Meters.of(leftEncoder.getPosition())).linearVelocity(MetersPerSecond.of(leftEncoder.getVelocity()));
+          log.motor("drive-right").voltage(Volts.of(rightMotor.getAppliedOutput()*rightMotor.getBusVoltage())).linearPosition(Meters.of(rightEncoder.getPosition())).linearVelocity(MetersPerSecond.of(rightEncoder.getVelocity()));
+        }, this));
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
