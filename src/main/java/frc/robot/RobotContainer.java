@@ -77,6 +77,7 @@ public class RobotContainer {
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
     driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
+    driverPS.R2().whileTrue(m_DriveSubsystem.run(() -> m_DriveSubsystem.applyVoltage(0.5)));
 
     driverPS.L1().whileTrue(new IntakeCommand(m_FuelSubsystem, m_FeederSubsystem));
     // driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
