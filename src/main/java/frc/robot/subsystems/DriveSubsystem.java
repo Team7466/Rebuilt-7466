@@ -200,7 +200,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     globalConfig
         .encoder
-        .velocityConversionFactor(1)
+        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
     globalConfig
