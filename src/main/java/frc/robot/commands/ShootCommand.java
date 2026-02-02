@@ -4,15 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.FuelSubsystem;
-import edu.wpi.first.wpilibj.Timer;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShootCommand extends Command {
-   FuelSubsystem fuelSubsystem;
-   FeederSubsystem feederSubsystem;
+  FuelSubsystem fuelSubsystem;
+  FeederSubsystem feederSubsystem;
 
   /** Creates a new ShootCommand. */
   public ShootCommand(FuelSubsystem fuelSubsystem, FeederSubsystem feederSubsystem) {
@@ -30,10 +30,10 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     fuelSubsystem.fuelSetSpeed(0.7);
-      Timer.delay(0.8);
-      feederSubsystem.feederShoot();
-      fuelSubsystem.fuelShoot();
+    fuelSubsystem.fuelSetSpeed(0.7);
+    Timer.delay(0.8);
+    feederSubsystem.feederShoot();
+    fuelSubsystem.fuelShoot();
   }
 
   // Called once the command ends or is interrupted.

@@ -21,10 +21,10 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int leftMotor = 14; // CAN ID
-    public static final int leftFollower = 15; // CAN ID
-    public static final int rightMotor = 11; // CAN ID
-    public static final int rightFollower = 10; // CAN ID
+    public static final int leftMotor = 11; // CAN ID
+    public static final int leftFollower = 10; // CAN ID
+    public static final int rightMotor = 14; // CAN ID
+    public static final int rightFollower = 15; // CAN ID
 
     public static final double trackWidthMeters = 0.533; // meters
     public static final double gearRatio = 10.71428;

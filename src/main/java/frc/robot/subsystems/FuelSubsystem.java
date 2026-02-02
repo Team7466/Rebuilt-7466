@@ -65,4 +65,7 @@ public class FuelSubsystem extends SubsystemBase {
   public void fuelIntake() {
     fuelMotor.set(0.75);
   }
+
+  @Override
+  public void periodic() {}
 }

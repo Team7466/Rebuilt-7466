@@ -66,4 +66,7 @@ public class FeederSubsystem extends SubsystemBase {
 
     feederMotor.set(0.0);
   }
+
+  @Override
+  public void periodic() {}
 }

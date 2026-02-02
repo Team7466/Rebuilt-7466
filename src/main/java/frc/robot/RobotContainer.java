@@ -49,7 +49,7 @@ public class RobotContainer {
     m_DriveSubsystem.setDefaultCommand(
         new DriveCommand(
             m_DriveSubsystem,
-            () -> driverPS.getLeftY() * speed,
+            () -> -driverPS.getLeftY() * speed,
             () -> 0.8 * -driverPS.getRightX()));
 
     m_FuelSubsystem.setDefaultCommand(
@@ -79,19 +79,21 @@ public class RobotContainer {
     driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
 
     driverPS.L1().whileTrue(new IntakeCommand(m_FuelSubsystem, m_FeederSubsystem));
-    //driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83))); //intake 
-    //driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); //intake
-    
-    
+    // driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
+    // //intake
+    // driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
+    // //intake
+
     driverPS.circle().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
-    driverPS.circle().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));// motor
+    driverPS
+        .circle()
+        .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // motor
 
     driverPS.L2().whileTrue(new ShootCommand(m_FuelSubsystem, m_FeederSubsystem));
-    // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0))); //firlat 
-    // driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83))); //firlat
-
-
-
+    // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
+    // //firlat
+    // driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
+    // //firlat
 
   }
   /**

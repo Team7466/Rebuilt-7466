@@ -94,17 +94,26 @@ public class DriveSubsystem extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
-    //Drivresubsystem SysID rutini
-   final SysIdRoutine m_SysIdRoutine= new SysIdRoutine(
-      new SysIdRoutine.Config(),
-      new SysIdRoutine.Mechanism(
-        (voltage)->{
-          leftMotor.setVoltage(voltage.in(Volts));
-          rightMotor.setVoltage(voltage.in(Volts));
-        }, log->{
-          log.motor("drive-left").voltage(Volts.of(leftMotor.getAppliedOutput()*leftMotor.getBusVoltage())).linearPosition(Meters.of(leftEncoder.getPosition())).linearVelocity(MetersPerSecond.of(leftEncoder.getVelocity()));
-          log.motor("drive-right").voltage(Volts.of(rightMotor.getAppliedOutput()*rightMotor.getBusVoltage())).linearPosition(Meters.of(rightEncoder.getPosition())).linearVelocity(MetersPerSecond.of(rightEncoder.getVelocity()));
-        }, this));
+    // Drivresubsystem SysID rutini
+    final SysIdRoutine m_SysIdRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> {
+                  leftMotor.setVoltage(voltage.in(Volts));
+                  rightMotor.setVoltage(voltage.in(Volts));
+                },
+                log -> {
+                  log.motor("drive-left")
+                      .voltage(Volts.of(leftMotor.getAppliedOutput() * leftMotor.getBusVoltage()))
+                      .linearPosition(Meters.of(leftEncoder.getPosition()))
+                      .linearVelocity(MetersPerSecond.of(leftEncoder.getVelocity()));
+                  log.motor("drive-right")
+                      .voltage(Volts.of(rightMotor.getAppliedOutput() * rightMotor.getBusVoltage()))
+                      .linearPosition(Meters.of(rightEncoder.getPosition()))
+                      .linearVelocity(MetersPerSecond.of(rightEncoder.getVelocity()));
+                },
+                this));
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
@@ -231,8 +240,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("sol sıcaklık", leftMotor.getMotorTemperature());
-    SmartDashboard.putNumber("sag sıcaklık", rightMotor.getMotorTemperature());
+    SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
+    SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     // This method will be called once per scheduler run
   }
 }
