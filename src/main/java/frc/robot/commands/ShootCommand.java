@@ -30,8 +30,8 @@ public class ShootCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     fuelSubsystem.fuelSetSpeed(0.6);
-      Timer.delay(0.8);
+     fuelSubsystem.fuelSetSpeed(0.75);
+      Timer.delay(0.85);
       feederSubsystem.feederShoot();
       fuelSubsystem.fuelShoot();
   }
