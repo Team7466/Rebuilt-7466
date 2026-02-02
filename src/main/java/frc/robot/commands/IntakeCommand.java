@@ -18,6 +18,8 @@ public class IntakeCommand extends Command {
     this.fuelSubsystem = fuelSubsystem;
     this.feederSubsystem = feederSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
+
+    addRequirements(fuelSubsystem, feederSubsystem);
   }
 
   // Called when the command is initially scheduled.
