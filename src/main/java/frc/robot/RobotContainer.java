@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -30,6 +35,8 @@ public class RobotContainer {
   FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
 
   private double speed = 0.9;
+
+  private final SendableChooser<Command> autoChooser; //Otonom için auto seçici
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
@@ -58,10 +65,15 @@ public class RobotContainer {
     m_FeederSubsystem.setDefaultCommand(
         m_FeederSubsystem.run(() -> m_FeederSubsystem.feederStop()));
 
-    // Setup auto chooser
+    autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
+    SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor
+
 
     // Configure the trigger bindings
     configureBindings();
+  }
+  public Command getAutonomousCommand() {
+    return autoChooser.getSelected(); //Seçilen otonom komutu döndürülüyor
   }
 
   /**
