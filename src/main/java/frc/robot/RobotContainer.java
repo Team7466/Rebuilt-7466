@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,6 +65,8 @@ public class RobotContainer {
 
     m_FeederSubsystem.setDefaultCommand(
         m_FeederSubsystem.run(() -> m_FeederSubsystem.feederStop()));
+
+    NamedCommands.registerCommand("shoot", m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelShoot())); // Robot otonom  shoot komutu kaydediliyor
 
     autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
     SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor
