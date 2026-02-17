@@ -36,6 +36,16 @@ public final class Constants {
     public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
   }
 
+  public static class LimelightConstants {
+    public static final String limelightName = "limelight";
+    public static final int aprilTagPipeline = 0;
+    public static final double hubX = 4.625; // meters, blue alliance origin
+    public static final double hubY = 4.0349; // meters, blue alliance origin
+    public static final double searchSpeed = 0.35;
+    public static final double aimKP = 0.02;
+    public static final double aimTolerance = 2.0; // degrees
+  }
+
   public static class FeederConstants {
     public static final int feederMotor = 13; // CAN ID
   }
