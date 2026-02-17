@@ -6,20 +6,20 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
-  FuelSubsystem fuelSubsystem;
+  IntakeSubsystem intakeSubsystem;
   FeederSubsystem feederSubsystem;
 
   /** Creates a new IntakeCommand. */
-  public IntakeCommand(FuelSubsystem fuelSubsystem, FeederSubsystem feederSubsystem) {
-    this.fuelSubsystem = fuelSubsystem;
+  public IntakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem) {
+    this.intakeSubsystem = intakeSubsystem;
     this.feederSubsystem = feederSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
 
-    addRequirements(fuelSubsystem, feederSubsystem);
+    addRequirements(intakeSubsystem, feederSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +30,7 @@ public class IntakeCommand extends Command {
   @Override
   public void execute() {
     feederSubsystem.feederIntake();
-    fuelSubsystem.fuelIntake();
+    intakeSubsystem.intake();
   }
 
   // Called once the command ends or is interrupted.

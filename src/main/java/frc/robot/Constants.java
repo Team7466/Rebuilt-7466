@@ -21,10 +21,10 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int leftMotor = 11; // CAN ID
+    public static final int leftMotor = 12; // CAN ID
     public static final int leftFollower = 10; // CAN ID
-    public static final int rightMotor = 14; // CAN ID
-    public static final int rightFollower = 15; // CAN ID
+    public static final int rightMotor = 17; // CAN ID
+    public static final int rightFollower = 18; // CAN ID
 
     public static final double trackWidthMeters = 0.5505; // meters
     public static final double gearRatio = 10.714285;
@@ -47,13 +47,17 @@ public final class Constants {
   }
 
   public static class FeederConstants {
-    public static final int feederMotor = 13; // CAN ID
+    public static final int feederMotor = 15; // CAN ID
   }
 
-  public static class FuelConstants {
-    public static final int fuelMotor = 12; // CAN ID
-    public static final double fuelspeed = 0.6;
+  public static class IntakeConstants {
+    public static final int intakeMotor = 13; // CAN ID
+    public static final double intakeSpeed = 0.6;
+  }
 
-    public static int beamBreak = 2; // DIO
+  public static class ShooterConstants {
+    public static final int shooterMotorLeft = 14; // CAN ID
+    public static final int shooterMotorRight = 16; // CAN ID
+    public static final double shooterSpeed = 0.8;
   }
 }
