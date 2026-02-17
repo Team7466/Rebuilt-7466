@@ -60,4 +60,7 @@ public final class Constants {
     public static final int shooterMotorRight = 16; // CAN ID
     public static final double shooterSpeed = 0.8;
   }
+  public static class ClimberConstants {
+    public static final int climberMotor = 11; // CAN ID
+  }
 }

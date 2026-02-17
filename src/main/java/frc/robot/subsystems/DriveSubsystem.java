@@ -47,8 +47,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final SparkMax rightMotorFollower;
   private final RelativeEncoder leftEncoder;
   private final RelativeEncoder rightEncoder;
-  private final RelativeEncoder leftEncoder2;
-  private final RelativeEncoder rightEncoder2;
   private final DifferentialDriveKinematics kinematics;
   private RobotConfig config;
   public DifferentialDrive robotDrive;
@@ -76,10 +74,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig = new SparkMaxConfig();
     rightFollowerConfig = new SparkMaxConfig();
 
-    leftEncoder = leftMotor.getEncoder();
-    leftEncoder2 = leftMotorFollower.getEncoder();
-    rightEncoder = rightMotor.getEncoder();
-    rightEncoder2 = rightMotorFollower.getEncoder();
+    leftEncoder = leftMotorFollower.getAlternateEncoder();
+    rightEncoder = rightMotorFollower.getAlternateEncoder();
 
     setConfigs();
     applyConfigs();
@@ -253,8 +249,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Left 2 Speed RPM", leftEncoder2.getVelocity());
-    SmartDashboard.putNumber("Right 2 Speed RPM", rightEncoder2.getVelocity());
     SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
     SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     // This method will be called once per scheduler run

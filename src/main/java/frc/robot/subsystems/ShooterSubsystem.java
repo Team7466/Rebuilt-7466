@@ -1,23 +1,30 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterSubsystem extends SubsystemBase {
   private final SparkMax shooterMotorLeft;
   private final SparkMax shooterMotorRight;
+  private RelativeEncoder leftEncoder;
+  private RelativeEncoder rightEncoder;
   private SparkMaxConfig leftConfig;
   private SparkMaxConfig rightConfig;
 
   public ShooterSubsystem() {
     shooterMotorLeft = new SparkMax(ShooterConstants.shooterMotorLeft, MotorType.kBrushless);
     shooterMotorRight = new SparkMax(ShooterConstants.shooterMotorRight, MotorType.kBrushless);
+    leftEncoder = shooterMotorLeft.getEncoder();
+    rightEncoder = shooterMotorRight.getEncoder();
     leftConfig = new SparkMaxConfig();
     rightConfig = new SparkMaxConfig();
     setConfigs();
@@ -66,5 +73,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("shooter L power", shooterMotorLeft.getAppliedOutput());
+    SmartDashboard.putNumber("shooter R power", shooterMotorRight.getAppliedOutput());
+    SmartDashboard.putNumber("shooter L RPM ", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("shooter R RPM ", rightEncoder.getVelocity());
+  }
 }
