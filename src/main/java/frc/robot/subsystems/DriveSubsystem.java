@@ -74,12 +74,11 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig = new SparkMaxConfig();
     rightFollowerConfig = new SparkMaxConfig();
 
-    leftEncoder = leftMotorFollower.getAlternateEncoder();
-    rightEncoder = rightMotorFollower.getAlternateEncoder();
-
     setConfigs();
     applyConfigs();
-
+    leftEncoder = leftMotorFollower.getAlternateEncoder();
+    rightEncoder = rightMotorFollower.getAlternateEncoder();
+    
     robotDrive = new DifferentialDrive(leftMotor, rightMotor);
     robotDrive.setSafetyEnabled(false);
     robotDrive.setDeadband(0.04);
