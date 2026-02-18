@@ -212,11 +212,53 @@ public class DriveSubsystem extends SubsystemBase {
     // Apply the global config and invert since it is on the opposite side
     rightConfig.apply(globalConfig).inverted(true);
 
-    // Apply the global config and set the leader SPARK for follower mode
-    leftFollowerConfig.apply(globalConfig).follow(leftMotor);
+    leftFollowerConfig
+        .smartCurrentLimit(40)
+        .idleMode(IdleMode.kBrake)
+        .openLoopRampRate(0.2)
+        .closedLoopRampRate(0.25)
+        .voltageCompensation(12.0);
 
-    // Apply the global config and set the leader SPARK for follower mode
-    rightFollowerConfig.apply(globalConfig).follow(rightMotor);
+    leftFollowerConfig
+        .encoder
+        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
+        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
+
+    leftFollowerConfig
+        .alternateEncoder
+        .countsPerRevolution(8192);
+
+    leftFollowerConfig
+        .signals
+        .primaryEncoderPositionPeriodMs(20)
+        .primaryEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(5);
+    leftFollowerConfig.follow(leftMotor);
+
+
+    rightFollowerConfig
+        .smartCurrentLimit(40)
+        .idleMode(IdleMode.kBrake)
+        .openLoopRampRate(0.2)
+        .closedLoopRampRate(0.25)
+        .voltageCompensation(12.0);
+
+    rightFollowerConfig
+        .encoder
+        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
+        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
+
+    rightFollowerConfig
+        .alternateEncoder
+        .countsPerRevolution(8192);
+
+    rightFollowerConfig
+        .signals
+        .primaryEncoderPositionPeriodMs(20)
+        .primaryEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(5);
+    rightFollowerConfig.follow(rightMotor);
+
   }
 
   /** drive method for pathplanner */
