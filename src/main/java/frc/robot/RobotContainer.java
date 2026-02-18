@@ -35,8 +35,8 @@ public class RobotContainer {
   private double speed = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  public static final CommandXboxController driverXbox =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+ // public static final CommandXboxController driverXbox =
+  //    new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   public static final CommandPS5Controller driverPS =
       new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
@@ -79,8 +79,7 @@ public class RobotContainer {
   private void configureBindings() {
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5));
-    driverPS.R1().onFalse(Commands.run(() -> speed = 1.0));
-    driverPS.R2().whileTrue(m_DriveSubsystem.run(() -> m_DriveSubsystem.applyVoltage(0.5)));
+    driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
 
     driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
     // driverPS.L1().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));

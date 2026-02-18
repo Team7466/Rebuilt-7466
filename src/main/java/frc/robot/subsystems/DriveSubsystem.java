@@ -157,7 +157,7 @@ public class DriveSubsystem extends SubsystemBase {
   public ChassisSpeeds getCurrentSpeeds() {
     DifferentialDriveWheelSpeeds currentSpeeds =
         new DifferentialDriveWheelSpeeds(
-            leftMotor.getEncoder().getVelocity(), rightEncoder.getVelocity());
+            leftEncoder.getVelocity(), rightEncoder.getVelocity());
     return kinematics.toChassisSpeeds(currentSpeeds);
   }
 
@@ -228,7 +228,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     robotDrive.arcadeDrive(
         speeds.vxMetersPerSecond / Constants.DriveConstants.maxSpeed,
-        speeds.omegaRadiansPerSecond / 8);
+        speeds.omegaRadiansPerSecond / Constants.DriveConstants.maxAngularVelocity);
   }
 
   public Command getAutonomousCommand(String string) {
