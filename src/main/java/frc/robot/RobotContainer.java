@@ -61,6 +61,12 @@ public class RobotContainer {
     m_FeederSubsystem.setDefaultCommand(
         m_FeederSubsystem.run(() -> m_FeederSubsystem.feederStop()));
 
+    m_ClimberSubsystem.setDefaultCommand(
+        m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberStop()));
+        
+    m_shooterSubsystem.setDefaultCommand(
+        m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
+
     // Setup auto chooser
 
     // Configure the trigger bindings
