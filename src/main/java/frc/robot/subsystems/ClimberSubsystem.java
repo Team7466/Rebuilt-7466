@@ -1,23 +1,25 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberSubsystem extends SubsystemBase {
   private final SparkMax climberMotor;
   private SparkMaxConfig motorConfig;
-  Debouncer debounce;
+  private final RelativeEncoder climbEncoder;
 
   public ClimberSubsystem() {
     climberMotor = new SparkMax(ClimberConstants.climberMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
+    climbEncoder = climberMotor.getAlternateEncoder();
     setConfigs();
     applyConfigs();
   }
@@ -57,5 +59,7 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {}
+  public void periodic() {
+    SmartDashboard.putNumber("Climber", climbEncoder.getPosition());
+  }
 }

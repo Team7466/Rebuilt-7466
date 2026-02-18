@@ -12,6 +12,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -26,12 +27,12 @@ import frc.robot.subsystems.ShooterSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
-
+  ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
   IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
   ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
-  private double speed = 0.9;
+  private double speed = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   public static final CommandXboxController driverXbox =
@@ -52,7 +53,7 @@ public class RobotContainer {
         new DriveCommand(
             m_DriveSubsystem,
             () -> -driverPS.getLeftY() * speed,
-            () -> 0.8 * -driverPS.getRightX()));
+            () -> 0.6 * -driverPS.getRightX()));
 
     m_IntakeSubsystem.setDefaultCommand(
         m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeStop()));
@@ -77,11 +78,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
-    driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
+    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5));
+    driverPS.R1().onFalse(Commands.run(() -> speed = 1.0));
     driverPS.R2().whileTrue(m_DriveSubsystem.run(() -> m_DriveSubsystem.applyVoltage(0.5)));
 
-    driverPS.L1().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
+    driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
     // driverPS.L1().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));
     // //intake
     // driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
@@ -94,7 +95,14 @@ public class RobotContainer {
         .circle()
         .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // motor
 
-    driverPS.L2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
+    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
+
+    driverPS
+        .povUp()
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
+    driverPS
+        .povDown()
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
     // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
     // //firlat
     // driverPS.L2().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));
