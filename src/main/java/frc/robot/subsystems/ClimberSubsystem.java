@@ -19,9 +19,9 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberSubsystem() {
     climberMotor = new SparkMax(ClimberConstants.climberMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
-    climbEncoder = climberMotor.getAlternateEncoder();
     setConfigs();
     applyConfigs();
+    climbEncoder = climberMotor.getAlternateEncoder();
   }
 
   /** Set parameters for the SPARK. */
@@ -31,12 +31,15 @@ public class ClimberSubsystem extends SubsystemBase {
         .idleMode(IdleMode.kCoast)
         .openLoopRampRate(0.30)
         .voltageCompensation(12.0);
-
+    motorConfig
+    .alternateEncoder
+    .countsPerRevolution(8192);
     motorConfig
         .signals
         .appliedOutputPeriodMs(100)
         .primaryEncoderPositionPeriodMs(10)
         .primaryEncoderVelocityPeriodMs(100);
+      
   }
 
   private void applyConfigs() {
