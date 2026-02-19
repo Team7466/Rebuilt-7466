@@ -28,7 +28,7 @@ public class ClimberSubsystem extends SubsystemBase {
   private void setConfigs() {
     motorConfig
         .smartCurrentLimit(60)
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.30)
         .voltageCompensation(12.0);
     motorConfig
