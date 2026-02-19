@@ -95,10 +95,10 @@ public class RobotContainer {
 
     driverPS
         .circle()
-        .whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));
+        .whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83))); //sadece intake
     driverPS
-        .circle()
-        .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // motor
+        .square()
+        .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // sadece feeder
 
     driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
 

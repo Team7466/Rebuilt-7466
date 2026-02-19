@@ -33,7 +33,8 @@ public class FeederSubsystem extends SubsystemBase {
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.15)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .inverted(true);
 
     motorConfig
         .signals
