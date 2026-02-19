@@ -28,7 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast)
         .openLoopRampRate(0.20)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .inverted(true);
 
     motorConfig
         .signals

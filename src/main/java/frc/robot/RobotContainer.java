@@ -88,10 +88,7 @@ public class RobotContainer {
     driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
 
     driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
-    // driverPS.L1().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));
-    // //intake
-    // driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
-    // //intake
+
 
     driverPS
         .circle()
@@ -108,10 +105,6 @@ public class RobotContainer {
     driverPS
         .povDown()
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
-    // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
-    // //firlat
-    // driverPS.L2().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83)));
-    // //firlat
 
   }
   /**
