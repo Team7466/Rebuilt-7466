@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
         .primaryEncoderPositionPeriodMs(500)
         .primaryEncoderVelocityPeriodMs(10);
 
-    rightConfig.apply(leftConfig);
+    rightConfig.apply(leftConfig).inverted(true);
   }
 
   private void applyConfigs() {
