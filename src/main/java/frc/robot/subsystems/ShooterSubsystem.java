@@ -4,11 +4,15 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -22,6 +26,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkMaxConfig rightConfig;
   private double setpoint;
   private final SparkClosedLoopController shootController;
+  private final SimpleMotorFeedforward feedforward;
 
   public ShooterSubsystem() {
     shooterMotorLeft = new SparkMax(ShooterConstants.shooterMotorLeft, MotorType.kBrushless);
@@ -34,6 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
     applyConfigs();
     shootController = shooterMotorLeft.getClosedLoopController();
     setpoint = 3000.0;
+    feedforward = new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV);
   }
 
   /** Set parameters for the SPARK. */
@@ -84,7 +90,8 @@ public class ShooterSubsystem extends SubsystemBase {
     shootController.setSetpoint(
         setpoint,
          SparkMax.ControlType.kVelocity, 
-         ClosedLoopSlot.kSlot0);
+         ClosedLoopSlot.kSlot0,
+         feedforward.calculate(RPM));
   }
 
   public void shooterSetVoltage(double voltage) {
