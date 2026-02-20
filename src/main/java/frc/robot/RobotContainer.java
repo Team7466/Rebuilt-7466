@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
@@ -106,6 +107,8 @@ public class RobotContainer {
     driverPS
         .povDown()
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
+        
+    driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 2780.0));
   }
 
   /**
