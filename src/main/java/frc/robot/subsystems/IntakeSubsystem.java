@@ -54,7 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intake() {
-    intakeMotor.set(0.75);
+    intakeMotor.set(0.65);
   }
 
   @Override

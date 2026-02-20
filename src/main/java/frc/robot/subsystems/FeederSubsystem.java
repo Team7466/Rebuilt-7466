@@ -34,7 +34,7 @@ public class FeederSubsystem extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.15)
         .voltageCompensation(12.0)
-        .inverted(false);
+        .inverted(true);
 
     motorConfig
         .signals
