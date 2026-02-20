@@ -68,7 +68,8 @@ public class ShooterSubsystem extends SubsystemBase {
           .feedForward
           .kS(ShooterConstants.kS)
           .kV(ShooterConstants.kV);
-
+    leftConfig
+    .closedLoop.outputRange(-1.0, 1.0);
 
     rightConfig.apply(leftConfig).follow(shooterMotorLeft, true);
   }
@@ -90,8 +91,7 @@ public class ShooterSubsystem extends SubsystemBase {
     shootController.setSetpoint(
         setpoint,
          SparkMax.ControlType.kVelocity, 
-         ClosedLoopSlot.kSlot0,
-         feedforward.calculate(RPM));
+         ClosedLoopSlot.kSlot0);
   }
 
   public void shooterSetVoltage(double voltage) {
