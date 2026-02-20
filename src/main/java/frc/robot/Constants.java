@@ -31,7 +31,6 @@ public final class Constants {
     public static final double maxSpeed = 4.227576; // meters per second
     public static final double maxAngularVelocity = 2.0 * maxSpeed / trackWidthMeters; // rad/s
 
-
     public static final double wheelCircumference = Units.inchesToMeters(6.0 * Math.PI);
     public static final double velocityConversionFactor =
         (1.0 / gearRatio) * (wheelCircumference) / 60.0;
@@ -61,6 +60,9 @@ public final class Constants {
     public static final int shooterMotorLeft = 14; // CAN ID
     public static final int shooterMotorRight = 16; // CAN ID
     public static final double shooterSpeed = 0.8;
+    public static final double kS = 0.2; // Volts, static gain
+    public static final double kV = 0.38; // Volts per (meter per second), velocity gain
+    public static final double kA = 0.0; // Volts per (meter per second squared), acceleration gain
   }
 
   public static class ClimberConstants {

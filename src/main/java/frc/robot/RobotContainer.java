@@ -35,7 +35,7 @@ public class RobotContainer {
   private double speed = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
- // public static final CommandXboxController driverXbox =
+  // public static final CommandXboxController driverXbox =
   //    new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   public static final CommandPS5Controller driverPS =
@@ -63,7 +63,7 @@ public class RobotContainer {
 
     m_ClimberSubsystem.setDefaultCommand(
         m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberStop()));
-        
+
     m_shooterSubsystem.setDefaultCommand(
         m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
 
@@ -89,13 +89,14 @@ public class RobotContainer {
 
     driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
 
-
     driverPS
         .circle()
-        .whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83))); //sadece intake
+        .whileTrue(
+            m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83))); // sadece intake
     driverPS
         .square()
-        .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // sadece feeder
+        .whileTrue(
+            m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // sadece feeder
 
     driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
 
@@ -105,8 +106,11 @@ public class RobotContainer {
     driverPS
         .povDown()
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
-
+    driverPS
+        .cross()
+        .whileTrue(m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterSetVoltage(0.2)));
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

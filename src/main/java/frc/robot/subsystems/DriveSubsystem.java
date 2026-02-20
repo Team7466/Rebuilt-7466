@@ -78,7 +78,7 @@ public class DriveSubsystem extends SubsystemBase {
     applyConfigs();
     leftEncoder = leftMotorFollower.getAlternateEncoder();
     rightEncoder = rightMotorFollower.getAlternateEncoder();
-    
+
     robotDrive = new DifferentialDrive(leftMotor, rightMotor);
     robotDrive.setSafetyEnabled(false);
     robotDrive.setDeadband(0.04);
@@ -223,9 +223,7 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    leftFollowerConfig
-        .alternateEncoder
-        .countsPerRevolution(8192);
+    leftFollowerConfig.alternateEncoder.countsPerRevolution(8192);
 
     leftFollowerConfig
         .signals
@@ -233,7 +231,6 @@ public class DriveSubsystem extends SubsystemBase {
         .primaryEncoderVelocityPeriodMs(20)
         .appliedOutputPeriodMs(5);
     leftFollowerConfig.follow(leftMotor);
-
 
     rightFollowerConfig
         .smartCurrentLimit(40)
@@ -247,9 +244,7 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    rightFollowerConfig
-        .alternateEncoder
-        .countsPerRevolution(8192);
+    rightFollowerConfig.alternateEncoder.countsPerRevolution(8192);
 
     rightFollowerConfig
         .signals
@@ -257,7 +252,6 @@ public class DriveSubsystem extends SubsystemBase {
         .primaryEncoderVelocityPeriodMs(20)
         .appliedOutputPeriodMs(5);
     rightFollowerConfig.follow(rightMotor);
-
   }
 
   /** drive method for pathplanner */
