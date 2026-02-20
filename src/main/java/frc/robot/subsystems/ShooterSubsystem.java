@@ -100,11 +100,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void shooterWindUp() {
-    shooterMotorLeft.set(0.4);
+    shooterMotorLeft.set(0.5);
   }
 
   public void shoot() {
-    shooterMotorLeft.set(0.55);
+    shooterMotorLeft.set(0.65);
   }
 
   @Override
