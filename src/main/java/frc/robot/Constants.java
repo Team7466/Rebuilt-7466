@@ -60,7 +60,7 @@ public final class Constants {
     public static final int shooterMotorLeft = 14; // CAN ID
     public static final int shooterMotorRight = 16; // CAN ID
     public static final double shooterSpeed = 0.8;
-    public static final double kS = 0.2; // Volts, static gain
+    public static final double kS = 0.255; // Volts, static gain
     public static final double kV = 0.38; // Volts per (meter per second), velocity gain
     public static final double kA = 0.0; // Volts per (meter per second squared), acceleration gain
     public static final double kP = 0.7; // Proportional gain
