@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -23,7 +22,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkMaxConfig rightConfig;
   private double setpoint;
   private final SparkClosedLoopController shootController;
-  private SimpleMotorFeedforward feedforward;
 
   public ShooterSubsystem() {
     shooterMotorLeft = new SparkMax(ShooterConstants.shooterMotorLeft, MotorType.kBrushless);
@@ -36,9 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
     applyConfigs();
     shootController = shooterMotorLeft.getClosedLoopController();
     setpoint = 3000.0;
-    // Create a new SimpleMotorFeedforward with gains kS, kV, and kA
-    feedforward =
-        new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV, ShooterConstants.kA);
   }
 
   /** Set parameters for the SPARK. */
@@ -46,7 +41,9 @@ public class ShooterSubsystem extends SubsystemBase {
     leftConfig
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast)
+        .inverted(true)
         .openLoopRampRate(0.20)
+        .closedLoopRampRate(0.05)
         .voltageCompensation(12.0);
 
     leftConfig
@@ -54,8 +51,20 @@ public class ShooterSubsystem extends SubsystemBase {
         .appliedOutputPeriodMs(10)
         .primaryEncoderPositionPeriodMs(500)
         .primaryEncoderVelocityPeriodMs(10);
+    leftConfig
+        .closedLoop
+        .pid(
+            ShooterConstants.kP,
+            ShooterConstants.kI,
+            ShooterConstants.kD);
+    leftConfig
+          .closedLoop
+          .feedForward
+          .kS(ShooterConstants.kS)
+          .kV(ShooterConstants.kV);
 
-    rightConfig.apply(leftConfig).inverted(true);
+
+    rightConfig.apply(leftConfig).follow(shooterMotorLeft, true);
   }
 
   private void applyConfigs() {
@@ -66,21 +75,20 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void shooterSetSpeed(double speed) {
-
     shooterMotorLeft.set(speed);
-    shooterMotorRight.set(speed);
   }
 
   public void shooterSet(double RPM) {
     setpoint = RPM;
 
     shootController.setSetpoint(
-        setpoint, SparkMax.ControlType.kVelocity, ClosedLoopSlot.kSlot0, 2.0);
+        setpoint,
+         SparkMax.ControlType.kVelocity, 
+         ClosedLoopSlot.kSlot0);
   }
 
   public void shooterSetVoltage(double voltage) {
     shooterMotorLeft.setVoltage(voltage);
-    shooterMotorRight.setVoltage(voltage);
   }
 
   public Boolean isShooterAtSetpoint() {
@@ -89,17 +97,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void shooterStop() {
     shooterMotorLeft.set(0.0);
-    shooterMotorRight.set(0.0);
   }
 
   public void shooterWindUp() {
-    shooterMotorLeft.set(-0.4);
-    shooterMotorRight.set(-0.4);
+    shooterMotorLeft.set(0.4);
   }
 
   public void shoot() {
-    shooterMotorLeft.set(-0.55);
-    shooterMotorRight.set(-0.55);
+    shooterMotorLeft.set(0.55);
   }
 
   @Override
