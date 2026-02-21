@@ -99,7 +99,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Boolean isShooterAtSetpoint() {
-    return Math.abs((leftEncoder.getVelocity() - setpoint)) <= 110;
+    return Math.abs((leftEncoder.getVelocity() - setpoint)) <= 60.0;
   }
 
   public void shooterStop() {
