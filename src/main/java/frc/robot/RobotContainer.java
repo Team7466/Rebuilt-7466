@@ -108,7 +108,7 @@ public class RobotContainer {
         .povDown()
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
         
-    driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 2780.0));
+    driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 3030.0));
   }
 
   /**
