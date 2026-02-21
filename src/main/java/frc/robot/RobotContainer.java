@@ -76,7 +76,7 @@ public class RobotContainer {
     m_shooterSubsystem.setDefaultCommand(
         m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
 
-    // NamedCommands.registerCommand("shoot", m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelShoot())); // Robot otonom  shoot komutu kaydediliyor
+    NamedCommands.registerCommand("shoot", m_shooterSubsystem.run(() -> m_shooterSubsystem.shoot())); // Robot otonom  shoot komutu kaydediliyor
 
     autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
     SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor
