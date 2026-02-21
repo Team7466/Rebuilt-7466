@@ -7,22 +7,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.FuelConstants;
+import frc.robot.Constants.IntakeConstants;
 
-public class FuelSubsystem extends SubsystemBase {
-  private final SparkMax fuelMotor;
+public class IntakeSubsystem extends SubsystemBase {
+  private final SparkMax intakeMotor;
   private SparkMaxConfig motorConfig;
-  private SparkMaxConfig stopconfig;
-
-  private DigitalInput beamBreak;
-  private AnalogInput infraRed;
   Debouncer debounce;
 
-  public FuelSubsystem() {
-    fuelMotor = new SparkMax(FuelConstants.fuelMotor, MotorType.kBrushless);
+  public IntakeSubsystem() {
+    intakeMotor = new SparkMax(IntakeConstants.intakeMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
     setConfigs();
     applyConfigs();
@@ -33,8 +27,9 @@ public class FuelSubsystem extends SubsystemBase {
     motorConfig
         .smartCurrentLimit(60)
         .idleMode(IdleMode.kCoast)
-        .openLoopRampRate(0.20)
-        .voltageCompensation(12.0);
+        .openLoopRampRate(0.125)
+        .voltageCompensation(12.0)
+        .inverted(true);
 
     motorConfig
         .signals
@@ -44,26 +39,22 @@ public class FuelSubsystem extends SubsystemBase {
   }
 
   private void applyConfigs() {
-    fuelMotor.configure(
+    intakeMotor.configure(
         motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void fuelSetSpeed(double speed) {
+  public void intakeSetSpeed(double speed) {
 
-    fuelMotor.set(speed);
+    intakeMotor.set(speed);
   }
 
-  public void fuelStop() {
+  public void intakeStop() {
 
-    fuelMotor.set(0.0);
+    intakeMotor.set(0.0);
   }
 
-  public void fuelShoot() {
-    fuelMotor.set(0.9);
-  }
-
-  public void fuelIntake() {
-    fuelMotor.set(0.75);
+  public void intake() {
+    intakeMotor.set(0.70);
   }
 
   @Override

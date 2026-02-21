@@ -28,7 +28,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelPositions;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -47,8 +47,6 @@ public class DriveSubsystem extends SubsystemBase {
   private final SparkMax rightMotorFollower;
   private final RelativeEncoder leftEncoder;
   private final RelativeEncoder rightEncoder;
-  private final RelativeEncoder leftEncoder2;
-  private final RelativeEncoder rightEncoder2;
   private final DifferentialDriveKinematics kinematics;
   private RobotConfig config;
   public DifferentialDrive robotDrive;
@@ -76,13 +74,10 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig = new SparkMaxConfig();
     rightFollowerConfig = new SparkMaxConfig();
 
-    leftEncoder = leftMotor.getEncoder();
-    leftEncoder2 = leftMotorFollower.getEncoder();
-    rightEncoder = rightMotor.getEncoder();
-    rightEncoder2 = rightMotorFollower.getEncoder();
-
     setConfigs();
     applyConfigs();
+    leftEncoder = leftMotorFollower.getAlternateEncoder();
+    rightEncoder = rightMotorFollower.getAlternateEncoder();
 
     robotDrive = new DifferentialDrive(leftMotor, rightMotor);
     robotDrive.setSafetyEnabled(false);
@@ -143,6 +138,10 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+
+    // Configure Limelight pipeline for AprilTag detection
+    LimelightHelpers.setPipelineIndex(
+        Constants.LimelightConstants.limelightName, Constants.LimelightConstants.aprilTagPipeline);
   }
 
   public Pose2d getPose() {
@@ -157,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
   public ChassisSpeeds getCurrentSpeeds() {
     DifferentialDriveWheelSpeeds currentSpeeds =
         new DifferentialDriveWheelSpeeds(
-            leftMotor.getEncoder().getVelocity(), rightEncoder.getVelocity());
+            leftEncoder.getVelocity(), rightEncoder.getVelocity());
     return kinematics.toChassisSpeeds(currentSpeeds);
   }
 
@@ -212,11 +211,47 @@ public class DriveSubsystem extends SubsystemBase {
     // Apply the global config and invert since it is on the opposite side
     rightConfig.apply(globalConfig).inverted(true);
 
-    // Apply the global config and set the leader SPARK for follower mode
-    leftFollowerConfig.apply(globalConfig).follow(leftMotor);
+    leftFollowerConfig
+        .smartCurrentLimit(40)
+        .idleMode(IdleMode.kBrake)
+        .openLoopRampRate(0.2)
+        .closedLoopRampRate(0.25)
+        .voltageCompensation(12.0);
 
-    // Apply the global config and set the leader SPARK for follower mode
-    rightFollowerConfig.apply(globalConfig).follow(rightMotor);
+    leftFollowerConfig
+        .encoder
+        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
+        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
+
+    leftFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+
+    leftFollowerConfig
+        .signals
+        .primaryEncoderPositionPeriodMs(20)
+        .primaryEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(5);
+    leftFollowerConfig.follow(leftMotor);
+
+    rightFollowerConfig
+        .smartCurrentLimit(40)
+        .idleMode(IdleMode.kBrake)
+        .openLoopRampRate(0.2)
+        .closedLoopRampRate(0.25)
+        .voltageCompensation(12.0);
+
+    rightFollowerConfig
+        .encoder
+        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
+        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
+
+    rightFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+
+    rightFollowerConfig
+        .signals
+        .primaryEncoderPositionPeriodMs(20)
+        .primaryEncoderVelocityPeriodMs(20)
+        .appliedOutputPeriodMs(5);
+    rightFollowerConfig.follow(rightMotor);
   }
 
   /** drive method for pathplanner */
@@ -228,14 +263,14 @@ public class DriveSubsystem extends SubsystemBase {
   public void drive(ChassisSpeeds speeds) {
     robotDrive.arcadeDrive(
         speeds.vxMetersPerSecond / Constants.DriveConstants.maxSpeed,
-        speeds.omegaRadiansPerSecond / 8);
+        speeds.omegaRadiansPerSecond / Constants.DriveConstants.maxAngularVelocity);
   }
 
   public Command getAutonomousCommand(String string) {
     return new PathPlannerAuto(string);
   }
 
-  public void applyVoltage(double voltage){
+  public void applyVoltage(double voltage) {
     leftMotor.setVoltage(voltage);
     rightMotor.setVoltage(voltage);
   }
@@ -249,8 +284,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("Left 2 Speed RPM", leftEncoder2.getVelocity());
-    SmartDashboard.putNumber("Right 2 Speed RPM", rightEncoder2.getVelocity());
     SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
     SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     // This method will be called once per scheduler run

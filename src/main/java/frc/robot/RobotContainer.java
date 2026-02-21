@@ -15,12 +15,15 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AutoShoot;
 import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.FuelSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -31,17 +34,18 @@ import frc.robot.subsystems.FuelSubsystem;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   DriveSubsystem m_DriveSubsystem = new DriveSubsystem();
-
-  FuelSubsystem m_FuelSubsystem = new FuelSubsystem();
+  ClimberSubsystem m_ClimberSubsystem = new ClimberSubsystem();
+  IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
+  ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
 
-  private double speed = 0.9;
+  private double speed = 1.0;
 
   private final SendableChooser<Command> autoChooser; //Otonom için auto seçici
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  public static final CommandXboxController driverXbox =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // public static final CommandXboxController driverXbox =
+  //    new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   public static final CommandPS5Controller driverPS =
       new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
@@ -58,15 +62,21 @@ public class RobotContainer {
         new DriveCommand(
             m_DriveSubsystem,
             () -> -driverPS.getLeftY() * speed,
-            () -> 0.8 * -driverPS.getRightX()));
+            () -> 0.6 * -driverPS.getRightX()));
 
-    m_FuelSubsystem.setDefaultCommand(
-        m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelStop()));
+    m_IntakeSubsystem.setDefaultCommand(
+        m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeStop()));
 
     m_FeederSubsystem.setDefaultCommand(
         m_FeederSubsystem.run(() -> m_FeederSubsystem.feederStop()));
 
-    NamedCommands.registerCommand("shoot", m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelShoot())); // Robot otonom  shoot komutu kaydediliyor
+    m_ClimberSubsystem.setDefaultCommand(
+        m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberStop()));
+
+    m_shooterSubsystem.setDefaultCommand(
+        m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
+
+    // NamedCommands.registerCommand("shoot", m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelShoot())); // Robot otonom  shoot komutu kaydediliyor
 
     autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
     SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor
@@ -90,28 +100,32 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.6));
-    driverPS.R1().onFalse(Commands.run(() -> speed = 0.9));
-    driverPS.R2().whileTrue(m_DriveSubsystem.run(() -> m_DriveSubsystem.applyVoltage(0.5)));
+    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5));
+    driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
 
-    driverPS.L1().whileTrue(new IntakeCommand(m_FuelSubsystem, m_FeederSubsystem));
-    // driverPS.L1().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
-    // //intake
-    // driverPS.L1().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0)));
-    // //intake
+    driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
 
-    driverPS.circle().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
     driverPS
         .circle()
-        .whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // motor
+        .whileTrue(
+            m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83))); // sadece intake
+    driverPS
+        .square()
+        .whileTrue(
+            m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // sadece feeder
 
-    driverPS.L2().whileTrue(new ShootCommand(m_FuelSubsystem, m_FeederSubsystem));
-    // driverPS.L2().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(-1.0)));
-    // //firlat
-    // driverPS.L2().whileTrue(m_FuelSubsystem.run(() -> m_FuelSubsystem.fuelSetSpeed(0.83)));
-    // //firlat
+    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
 
+    driverPS
+        .povUp()
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
+    driverPS
+        .povDown()
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
+        
+    driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 3030.0));
   }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *

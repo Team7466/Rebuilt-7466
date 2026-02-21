@@ -6,31 +6,40 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeederSubsystem;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCommand extends Command {
-  IntakeSubsystem intakeSubsystem;
+public class AutoShoot extends Command {
   FeederSubsystem feederSubsystem;
-
-  /** Creates a new IntakeCommand. */
-  public IntakeCommand(IntakeSubsystem intakeSubsystem, FeederSubsystem feederSubsystem) {
-    this.intakeSubsystem = intakeSubsystem;
+  ShooterSubsystem shooterSubsystem;
+  boolean isFinished;
+  double RPM;
+  /** Creates a new AutoShoot. */
+  public AutoShoot(FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, double RPM) {
     this.feederSubsystem = feederSubsystem;
+    this.shooterSubsystem = shooterSubsystem;
+    this.RPM = RPM;
     // Use addRequirements() here to declare subsystem dependencies.
 
-    addRequirements(intakeSubsystem, feederSubsystem);
+    addRequirements(feederSubsystem, shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    isFinished = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    feederSubsystem.feederIntake();
-    intakeSubsystem.intake();
+
+      shooterSubsystem.shooterSet(RPM);
+
+  if (shooterSubsystem.isShooterAtSetpoint()) {
+      feederSubsystem.feederShoot();
+    }
+
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +49,6 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return isFinished;
   }
 }
