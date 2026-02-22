@@ -14,6 +14,7 @@ public class AutoShoot extends Command {
   ShooterSubsystem shooterSubsystem;
   boolean isFinished;
   double RPM;
+
   /** Creates a new AutoShoot. */
   public AutoShoot(FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, double RPM) {
     this.feederSubsystem = feederSubsystem;
@@ -34,12 +35,11 @@ public class AutoShoot extends Command {
   @Override
   public void execute() {
 
-      shooterSubsystem.shooterSet(RPM);
+    shooterSubsystem.shooterSet(RPM);
 
-  if (shooterSubsystem.isShooterAtSetpoint()) {
+    if (shooterSubsystem.isShooterAtSetpoint()) {
       feederSubsystem.feederShoot();
     }
-
   }
 
   // Called once the command ends or is interrupted.
