@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AlignToHubCommand;
 import frc.robot.commands.AutoShoot;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
@@ -16,6 +17,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /**
@@ -31,6 +33,7 @@ public class RobotContainer {
   IntakeSubsystem m_IntakeSubsystem = new IntakeSubsystem();
   FeederSubsystem m_FeederSubsystem = new FeederSubsystem();
   ShooterSubsystem m_shooterSubsystem = new ShooterSubsystem();
+  LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem();
 
   private double speed = 1.0;
 
@@ -106,6 +109,7 @@ public class RobotContainer {
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
 
     driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 3030.0));
+    driverPS.triangle().whileTrue(new AlignToHubCommand(m_DriveSubsystem, m_LimelightSubsystem, true));
   }
 
   /**

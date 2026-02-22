@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -40,11 +41,23 @@ public final class Constants {
   public static class LimelightConstants {
     public static final String limelightName = "limelight";
     public static final int aprilTagPipeline = 0;
-    public static final double hubX = 4.625; // meters, blue alliance origin
-    public static final double hubY = 4.0349; // meters, blue alliance origin
+
+    // Hub centers in WPILib field coords (meters, blue-origin).
+    // From 2026 official field dimension drawings:
+    //   Blue hub X = 181.56 in * 0.0254 = 4.612 m from blue alliance wall
+    //   Hub Y      = 158.32 in * 0.0254 = 4.021 m (lateral center)
+    //   Red hub X  = (651.22 - 181.56) in * 0.0254 = 11.929 m
+    public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.612, 4.021);
+    public static final Translation2d RED_HUB_CENTER = new Translation2d(11.929, 4.021);
+
+    public static final double maxAmbiguity = 0.2;
+
     public static final double searchSpeed = 0.35;
-    public static final double aimKP = 0.02;
-    public static final double aimTolerance = 2.0; // degrees
+    public static final double aimKP = 0.05;
+    public static final double aimKI = 0.0;
+    public static final double aimKD = 0.000;
+    public static final double aimTolerance = 1.5; // degrees
+    public static final double aimMaxSpeed = 0.5;
   }
 
   public static class FeederConstants {
