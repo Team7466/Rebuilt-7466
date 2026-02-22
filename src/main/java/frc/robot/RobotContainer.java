@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutoShoot;
-import frc.robot.commands.DriveCommand;
 import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -51,10 +50,8 @@ public class RobotContainer {
   public RobotContainer() {
 
     m_DriveSubsystem.setDefaultCommand(
-        new DriveCommand(
-            m_DriveSubsystem,
-            () -> -driverPS.getLeftY() * speed,
-            () -> 0.6 * -driverPS.getRightX()));
+        m_DriveSubsystem.driveCommand(
+            () -> speed * -driverPS.getLeftY(), () -> 0.7 * -driverPS.getRightX()));
 
     m_IntakeSubsystem.setDefaultCommand(
         m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeStop()));
@@ -107,7 +104,7 @@ public class RobotContainer {
     driverPS
         .povDown()
         .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
-        
+
     driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 3030.0));
   }
 
