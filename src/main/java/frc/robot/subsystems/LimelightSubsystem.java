@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -101,7 +102,9 @@ public class LimelightSubsystem extends SubsystemBase {
             : LimelightConstants.BLUE_HUB_CENTER;
 
     Translation2d toHub = hubCenter.minus(robotPose.getTranslation());
-    return OptionalDouble.of(Math.toDegrees(Math.atan2(toHub.getY(), toHub.getX())));
+    double bearing = Math.toDegrees(Math.atan2(toHub.getY(), toHub.getX()));
+    // Shooter is at the back, so rotate target bearing 180° and wrap to [-180, 180]
+    return OptionalDouble.of(MathUtil.inputModulus(bearing + 180.0, -180.0, 180.0));
   }
 
   @Override
