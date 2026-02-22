@@ -195,7 +195,10 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    leftFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+    leftFollowerConfig.alternateEncoder
+        .countsPerRevolution(8192)
+        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
     leftFollowerConfig
         .signals
@@ -216,7 +219,10 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    rightFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+    rightFollowerConfig.alternateEncoder
+        .countsPerRevolution(8192)
+        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
     rightFollowerConfig
         .signals
@@ -280,8 +286,8 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LEFT 2 POWER", leftMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT POWER", rightMotor.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
-    SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Left Speed m/s", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Right Speed m/s", rightEncoder.getVelocity());
     SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
     SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
