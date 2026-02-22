@@ -26,8 +26,8 @@ import limelight.results.RawFiducial;
 
 public class LimelightSubsystem extends SubsystemBase {
 
-  private static final Set<Integer> BLUE_HUB_TAGS = Set.of(2, 3, 4, 5, 8, 9, 10, 11);
-  private static final Set<Integer> RED_HUB_TAGS = Set.of(18, 19, 20, 21, 24, 25, 26, 27);
+  private static final Set<Integer> BLUE_HUB_TAGS = Set.of(18, 21, 24, 25, 26, 27);
+  private static final Set<Integer> RED_HUB_TAGS = Set.of(2,5, 8, 9, 10, 11);
 
   private final Limelight limelight;
   private final LimelightPoseEstimator poseEstimator;
