@@ -163,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   private void setConfigs() {
     globalConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
@@ -184,7 +184,7 @@ public class DriveSubsystem extends SubsystemBase {
     rightConfig.apply(globalConfig).inverted(true);
 
     leftFollowerConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
@@ -208,7 +208,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig.follow(leftMotor);
 
     rightFollowerConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
