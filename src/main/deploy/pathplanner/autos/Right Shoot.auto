@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "go mid"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "go forward"
+            "pathName": "Right to hub"
           }
         },
         {
