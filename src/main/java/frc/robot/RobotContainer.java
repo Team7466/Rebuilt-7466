@@ -89,6 +89,8 @@ public class RobotContainer {
     driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
 
     driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
+    driverPS.L2().onFalse(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(-0.7)).withTimeout(1.0));
+    driverPS.L2().onFalse(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(1.0));
 
     driverPS
         .circle()
