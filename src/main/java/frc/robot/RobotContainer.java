@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToHubCommand;
-import frc.robot.commands.AutoShoot;
-import frc.robot.commands.IntakeCommand;
 import frc.robot.commands.ShootCommand;
+import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ManualShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.FeederSubsystem;
@@ -85,33 +85,58 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5));
-    driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
+    /*
+     *
+     * DRIVER CONTROLS:
+     R1: yarım hız modu
+     * 
+     */
 
-    driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem));
-    driverPS.L2().onFalse(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(-0.7)).withTimeout(1.0));
-    driverPS.L2().onFalse(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(1.0));
+    driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5)); // hiz ayar butonu
 
-    driverPS
-        .circle()
-        .whileTrue(
-            m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(0.83))); // sadece intake
-    driverPS
-        .square()
-        .whileTrue(
-            m_FeederSubsystem.run(() -> m_FeederSubsystem.feederSetSpeed(1.0))); // sadece feeder
+    /*
+     * 
+     * OPERATOR CONTROLS:
+      L2: intake ve feeder birlikte
+      X : shooter ve feeder birlikte
+      R2 : shooter ve feeder birlikte (manuel pid yok)
+      DAIRE : sadece intake
+      KARE : sadece feeder
+      UCGEN : limelight ile hub'a hizalanma
+      DPAD UP : climber up
+      DPAD DOWN : climber down
+     * 
+     */
 
-    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem));
+    driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem)); //  intake ve feeder
+
+    driverPS.cross().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 3030.0)); // shooter ve feeder 
+
+    driverPS.circle().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
+    driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder
+
+    driverPS.R2().whileTrue(new ManualShootCommand(m_FeederSubsystem, m_shooterSubsystem)); // shooter ve feeder (manuel pid yok)
+
 
     driverPS
         .povUp()
-        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5))); // tırmanış
     driverPS
         .povDown()
-        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5)));
+        .whileTrue(m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(-0.5))); // climber geri
 
-    driverPS.cross().whileTrue(new AutoShoot(m_FeederSubsystem, m_shooterSubsystem, 3030.0));
+
+
     driverPS.triangle().whileTrue(new AlignToHubCommand(m_DriveSubsystem, m_LimelightSubsystem, true));
+
+    /*
+     * 
+      butonlar bırakıldığında yapılacak işlemler
+     */
+
+    driverPS.L2().onFalse(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(-0.7)).withTimeout(1.0));
+    driverPS.L2().onFalse(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(1.0));
+    driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
   }
 
   /**
