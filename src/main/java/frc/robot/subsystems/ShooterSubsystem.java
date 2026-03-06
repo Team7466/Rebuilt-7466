@@ -64,7 +64,11 @@ public class ShooterSubsystem extends SubsystemBase {
           .kV(ShooterConstants.kV);
     leftConfig
     .closedLoop.outputRange(-1.0, 1.0);
-
+    leftConfig
+          .encoder
+            .uvwMeasurementPeriod(10)
+            .uvwAverageDepth(4);
+            
     rightConfig.apply(leftConfig).follow(shooterMotorLeft, true);
   }
 
