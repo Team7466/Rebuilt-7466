@@ -4,15 +4,11 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
@@ -26,7 +22,6 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkMaxConfig rightConfig;
   private double setpoint;
   private final SparkClosedLoopController shootController;
-  private final SimpleMotorFeedforward feedforward;
 
   public ShooterSubsystem() {
     shooterMotorLeft = new SparkMax(ShooterConstants.shooterMotorLeft, MotorType.kBrushless);
@@ -39,7 +34,6 @@ public class ShooterSubsystem extends SubsystemBase {
     applyConfigs();
     shootController = shooterMotorLeft.getClosedLoopController();
     setpoint = 3000.0;
-    feedforward = new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV);
   }
 
   /** Set parameters for the SPARK. */
@@ -70,7 +64,11 @@ public class ShooterSubsystem extends SubsystemBase {
           .kV(ShooterConstants.kV);
     leftConfig
     .closedLoop.outputRange(-1.0, 1.0);
-
+    leftConfig
+          .encoder
+            .uvwMeasurementPeriod(10)
+            .uvwAverageDepth(4);
+            
     rightConfig.apply(leftConfig).follow(shooterMotorLeft, true);
   }
 
@@ -117,7 +115,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("shooter L power", shooterMotorLeft.getAppliedOutput());
+    SmartDashboard.putNumber("shooter R power", shooterMotorRight.getAppliedOutput());
     SmartDashboard.putNumber("shooter L RPM ", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("shooter R RPM ", rightEncoder.getVelocity());
     SmartDashboard.putBoolean("shooter at setpoint", isShooterAtSetpoint());
     SmartDashboard.putNumber("shooter setpoint", setpoint);
   }

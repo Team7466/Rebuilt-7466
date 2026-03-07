@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -28,7 +29,7 @@ public final class Constants {
 
     public static final double trackWidthMeters = 0.5505; // meters
     public static final double gearRatio = 10.714285;
-    public static final double maxSpeed = 4.227576; // meters per second
+    public static final double maxSpeed = 4.0; // meters per second
     public static final double maxAngularVelocity = 2.0 * maxSpeed / trackWidthMeters; // rad/s
 
     public static final double wheelCircumference = Units.inchesToMeters(6.0 * Math.PI);
@@ -40,11 +41,23 @@ public final class Constants {
   public static class LimelightConstants {
     public static final String limelightName = "limelight";
     public static final int aprilTagPipeline = 0;
-    public static final double hubX = 4.625; // meters, blue alliance origin
-    public static final double hubY = 4.0349; // meters, blue alliance origin
+
+    // Hub centers in WPILib field coords (meters, blue-origin).
+    // From 2026 official field dimension drawings:
+    //   Blue hub X = 181.56 in * 0.0254 = 4.612 m from blue alliance wall
+    //   Hub Y      = 158.32 in * 0.0254 = 4.021 m (lateral center)
+    //   Red hub X  = (651.22 - 181.56) in * 0.0254 = 11.929 m
+    public static final Translation2d BLUE_HUB_CENTER = new Translation2d(4.612, 4.021);
+    public static final Translation2d RED_HUB_CENTER = new Translation2d(11.929, 4.021);
+
+    public static final double maxAmbiguity = 0.2;
+
     public static final double searchSpeed = 0.35;
-    public static final double aimKP = 0.02;
-    public static final double aimTolerance = 2.0; // degrees
+    public static final double aimKP = 0.05;
+    public static final double aimKI = 0.0;
+    public static final double aimKD = 0.000;
+    public static final double aimTolerance = 1.5; // degrees
+    public static final double aimMaxSpeed = 0.5;
   }
 
   public static class FeederConstants {
@@ -63,7 +76,7 @@ public final class Constants {
     public static final double kS = 0.0; // Volts, static gain
     public static final double kV = 0.00212; // Volts per RPM, velocity gain
     public static final double kA = 0.0; // Volts per (meter per second squared), acceleration gain
-    public static final double kP = 0.00007; // Proportional gain
+    public static final double kP = 0.00010; // Proportional gain
     public static final double kI = 0.0; // Integral gain
     public static final double kD = 0.0; // Derivative gain
     public static final double kF = 0.0; // Feedforward gain

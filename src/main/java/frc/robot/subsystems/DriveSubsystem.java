@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
@@ -23,6 +19,7 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.studica.frc.AHRS.NavXUpdateRate;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -33,9 +30,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import java.util.function.DoubleSupplier;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -61,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // navX Micro using usb
 
-    gyro = new AHRS(NavXComType.kUSB1, NavXUpdateRate.k50Hz);
+    gyro = new AHRS(NavXComType.kMXP_SPI, NavXUpdateRate.k100Hz);
 
     // All other subsystem initialization
     leftMotor = new SparkMax(Constants.DriveConstants.leftMotor, MotorType.kBrushless);
@@ -93,26 +89,6 @@ public class DriveSubsystem extends SubsystemBase {
       // Handle exception as needed
       e.printStackTrace();
     }
-    // Drivresubsystem SysID rutini
-    final SysIdRoutine m_SysIdRoutine =
-        new SysIdRoutine(
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> {
-                  leftMotor.setVoltage(voltage.in(Volts));
-                  rightMotor.setVoltage(voltage.in(Volts));
-                },
-                log -> {
-                  log.motor("drive-left")
-                      .voltage(Volts.of(leftMotor.getAppliedOutput() * leftMotor.getBusVoltage()))
-                      .linearPosition(Meters.of(leftEncoder.getPosition()))
-                      .linearVelocity(MetersPerSecond.of(leftEncoder.getVelocity()));
-                  log.motor("drive-right")
-                      .voltage(Volts.of(rightMotor.getAppliedOutput() * rightMotor.getBusVoltage()))
-                      .linearPosition(Meters.of(rightEncoder.getPosition()))
-                      .linearVelocity(MetersPerSecond.of(rightEncoder.getVelocity()));
-                },
-                this));
 
     // Configure AutoBuilder last
     AutoBuilder.configure(
@@ -138,10 +114,6 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
-
-    // Configure Limelight pipeline for AprilTag detection
-    LimelightHelpers.setPipelineIndex(
-        Constants.LimelightConstants.limelightName, Constants.LimelightConstants.aprilTagPipeline);
   }
 
   public Pose2d getPose() {
@@ -191,7 +163,7 @@ public class DriveSubsystem extends SubsystemBase {
    */
   private void setConfigs() {
     globalConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
@@ -212,7 +184,7 @@ public class DriveSubsystem extends SubsystemBase {
     rightConfig.apply(globalConfig).inverted(true);
 
     leftFollowerConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
@@ -223,7 +195,10 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    leftFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+    leftFollowerConfig.alternateEncoder
+        .countsPerRevolution(8192)
+        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
     leftFollowerConfig
         .signals
@@ -233,7 +208,7 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig.follow(leftMotor);
 
     rightFollowerConfig
-        .smartCurrentLimit(40)
+        .smartCurrentLimit(46)
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
@@ -244,7 +219,10 @@ public class DriveSubsystem extends SubsystemBase {
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
-    rightFollowerConfig.alternateEncoder.countsPerRevolution(8192);
+    rightFollowerConfig.alternateEncoder
+        .countsPerRevolution(8192)
+        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
     rightFollowerConfig
         .signals
@@ -259,6 +237,20 @@ public class DriveSubsystem extends SubsystemBase {
     robotDrive.arcadeDrive(0, 0);
   }
 
+  /**
+   * Command to drive the robot
+   *
+   * @param xSpeed Drive power (throttle). Squared for smoother controls.
+   * @param zRotation Rotation in the z axis(around itself). Squared for smoother controls.
+   * @return Drive command.
+   */
+  public Command driveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+    return run(
+        () -> {
+          robotDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble(), true);
+        });
+  }
+
   /** drive method for pathplanner */
   public void drive(ChassisSpeeds speeds) {
     robotDrive.arcadeDrive(
@@ -268,6 +260,18 @@ public class DriveSubsystem extends SubsystemBase {
 
   public Command getAutonomousCommand(String string) {
     return new PathPlannerAuto(string);
+  }
+
+  public void arcadeDrive(double speed, double rotation) {
+    robotDrive.arcadeDrive(speed, rotation);
+  }
+
+  public Rotation3d getGyroRotation3d() {
+    return gyro.getRotation3d();
+  }
+
+  public double getGyroYawRate() {
+    return gyro.getRate();
   }
 
   public void applyVoltage(double voltage) {
@@ -282,10 +286,11 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("LEFT 2 POWER", leftMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT POWER", rightMotor.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
-    SmartDashboard.putNumber("Left Speed RPM", leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Right Speed RPM", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Left Speed m/s", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Right Speed m/s", rightEncoder.getVelocity());
     SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
     SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
+    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
     // This method will be called once per scheduler run
   }
 }
