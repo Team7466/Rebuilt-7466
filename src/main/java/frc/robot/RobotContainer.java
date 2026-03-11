@@ -97,9 +97,9 @@ public class RobotContainer {
     /*
      * 
      * OPERATOR CONTROLS:
-      L2: intake ve feeder birlikte
-      X : shooter ve feeder birlikte
-      R2 : shooter ve feeder birlikte (manuel pid yok)
+      L2: intake ve feeder birlikte\
+      R2 : shooter ve feeder birlikte 
+      X : shooter ve feeder birlikte (manuel pid yok)
       DAIRE : sadece intake
       KARE : sadece feeder
       UCGEN : limelight ile hub'a hizalanma
@@ -108,14 +108,14 @@ public class RobotContainer {
      * 
      */
 
-    driverPS.L2().whileTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem)); //  intake ve feeder
+    driverPS.L2().onTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem)); //  intake ve feeder
 
     driverPS.cross().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 3030.0)); // shooter ve feeder 
 
-    driverPS.circle().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
+    driverPS.R2().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
     driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder
 
-    driverPS.R2().whileTrue(new ManualShootCommand(m_FeederSubsystem, m_shooterSubsystem)); // shooter ve feeder (manuel pid yok)
+    driverPS.circle().whileTrue(new ManualShootCommand(m_FeederSubsystem, m_shooterSubsystem)); // shooter ve feeder (manuel pid yok)
 
 
     driverPS
@@ -134,8 +134,8 @@ public class RobotContainer {
       butonlar bırakıldığında yapılacak işlemler
      */
 
-    driverPS.L2().onFalse(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(-0.7)).withTimeout(1.0));
-    driverPS.L2().onFalse(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(1.0));
+    driverPS.L1().onTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeSetSpeed(-0.7)).withTimeout(1.0));
+    driverPS.L1().onTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(1.0));
     driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
   }
 
