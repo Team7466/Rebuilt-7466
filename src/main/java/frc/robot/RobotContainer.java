@@ -110,7 +110,7 @@ public class RobotContainer {
 
     driverPS.L2().onTrue(new IntakeCommand(m_IntakeSubsystem, m_FeederSubsystem)); //  intake ve feeder
 
-    driverPS.cross().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 3030.0)); // shooter ve feeder 
+    driverPS.cross().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 2750.0)); // shooter ve feeder 
 
     driverPS.R2().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
     driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder
