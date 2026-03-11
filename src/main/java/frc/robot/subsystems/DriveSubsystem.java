@@ -288,8 +288,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("Left Speed m/s", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Speed m/s", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
-    SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
     // This method will be called once per scheduler run
   }
