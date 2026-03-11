@@ -31,7 +31,9 @@ public class ClimberSubsystem extends SubsystemBase {
         .idleMode(IdleMode.kBrake)
         .openLoopRampRate(0.30)
         .voltageCompensation(12.0);
-    motorConfig.alternateEncoder.countsPerRevolution(8192);
+    motorConfig.alternateEncoder
+    .setSparkMaxDataPortConfig()
+    .countsPerRevolution(8192);
     motorConfig
         .signals
         .appliedOutputPeriodMs(100)
