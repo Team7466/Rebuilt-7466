@@ -77,6 +77,7 @@ public class RobotContainer {
         m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
 
     NamedCommands.registerCommand("shoot", m_shooterSubsystem.run(() -> m_shooterSubsystem.shoot())); // Robot otonom  shoot komutu kaydediliyor
+    NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5))); //Climb kodu yazıldı ama düzenlenmesi gerekli tekrar
 
     autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
     SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor
