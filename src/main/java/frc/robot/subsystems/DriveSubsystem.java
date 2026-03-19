@@ -196,6 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
     leftFollowerConfig.alternateEncoder
+        .setSparkMaxDataPortConfig()
         .countsPerRevolution(8192)
         .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
         .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
@@ -220,6 +221,7 @@ public class DriveSubsystem extends SubsystemBase {
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
     rightFollowerConfig.alternateEncoder
+        .setSparkMaxDataPortConfig()
         .countsPerRevolution(8192)
         .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
         .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
@@ -288,8 +290,6 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("Left Speed m/s", leftEncoder.getVelocity());
     SmartDashboard.putNumber("Right Speed m/s", rightEncoder.getVelocity());
-    SmartDashboard.putNumber("sol sicaklik", leftMotor.getMotorTemperature());
-    SmartDashboard.putNumber("sag sicaklik", rightMotor.getMotorTemperature());
     odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
     // This method will be called once per scheduler run
   }
