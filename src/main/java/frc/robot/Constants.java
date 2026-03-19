@@ -84,5 +84,20 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final int climberMotor = 11; // CAN ID
+    // Tüm değerleri tekrar gözden geçir ve tune et
+    public static final double kP = 0.5;      
+    public static final double kI = 0.0;
+    public static final double kD = 0.01;
+   
+    public static final double maxVel = 0.5;
+    public static final double maxAccel = 0.5;
+    
+    public static final double posTolerance = 0.05;
+    public static final double velTolerance = 0.1;
+   
+    public static final double gravityFeedforward = 0.0;
+   
+    public static final double CLIMB_LOW_POSITION = 1.0; //Tekrar bak
+    public static final double CLIMB_HIGH_POSITION = 5.0; // Tekrar bak
   }
 }

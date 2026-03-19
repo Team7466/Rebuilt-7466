@@ -18,6 +18,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AlignToHubCommand;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.IntakeCommand;
+import frc.robot.commands.ClimbToPositionCommand;
 import frc.robot.commands.ManualShootCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -77,7 +78,10 @@ public class RobotContainer {
         m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
 
     NamedCommands.registerCommand("shoot", m_shooterSubsystem.run(() -> m_shooterSubsystem.shoot())); // Robot otonom  shoot komutu kaydediliyor
-    NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5))); //Climb kodu yazıldı ama düzenlenmesi gerekli tekrar
+   
+    NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
+
+    //NamedCommands.registerCommand("L1 Climb", m_ClimberSubsystem.goToPosition(10.00)); //Değer rastgele verilmiştir, gerçek hedef pozisyona göre ayarlanmalıdır
 
     autoChooser = AutoBuilder.buildAutoChooser(); //auto seçici oluşturuluyor
     SmartDashboard.putData("Auto Chooser",autoChooser); //SmartDashboard'a auto seçici ekleniyor

@@ -7,6 +7,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
@@ -16,12 +21,19 @@ public class ClimberSubsystem extends SubsystemBase {
   private SparkMaxConfig motorConfig;
   private final RelativeEncoder climbEncoder;
 
+  private final ProfiledPIDController m_controller = new ProfiledPIDController(
+    ClimberConstants.kP, ClimberConstants.kI, ClimberConstants.kD,
+    new TrapezoidProfile.Constraints(ClimberConstants.maxVel, ClimberConstants.maxAccel)
+);
+
   public ClimberSubsystem() {
     climberMotor = new SparkMax(ClimberConstants.climberMotor, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
     setConfigs();
     applyConfigs();
     climbEncoder = climberMotor.getAlternateEncoder();
+
+    m_controller.setTolerance(ClimberConstants.posTolerance);
   }
 
   /** Set parameters for the SPARK. */
@@ -58,8 +70,23 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.set(0.75);
   }
 
+  /** Return the encoder position for external controllers/commands. */
+  public double getPosition() {
+    return climbEncoder.getPosition();
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Climber", climbEncoder.getPosition());
   }
+
+  public Command goToPosition(double target) {
+    return this.runOnce(() -> m_controller.reset(this.getPosition())) // Önce profili sıfırla
+        .andThen(this.run(() -> {
+            double output = m_controller.calculate(this.getPosition(), target);
+            this.climberSetSpeed(MathUtil.clamp(output + ClimberConstants.gravityFeedforward, -1.0, 1.0));
+        }))
+        .until(m_controller::atGoal)
+        .finallyDo(this::climberStop);
+}
 }
