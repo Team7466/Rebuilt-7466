@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -48,6 +50,9 @@ public class RobotContainer {
 
   public final CommandXboxController operatorXbox =
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+
+  // Auto selector
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -140,10 +145,13 @@ public class RobotContainer {
 
     driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
   }
-
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */
+    public Command getAutonomousCommand() {
+        // Get selected auto command from chooser
+        return m_chooser.getSelected();
+    }
 }
