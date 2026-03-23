@@ -44,6 +44,7 @@ public class RobotContainer {
   LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem();
 
   private double speed = 1.0;
+  private double turnSpeed = 0.7;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   // public static final CommandXboxController driverXbox =
@@ -71,7 +72,7 @@ public class RobotContainer {
 
     m_DriveSubsystem.setDefaultCommand(
         m_DriveSubsystem.driveCommand(
-            () -> speed * -driverPS.getLeftY(), () -> 0.7 * -driverPS.getRightX()));
+            () -> speed * -driverPS.getLeftY(), () -> turnSpeed * -driverPS.getRightX()));
 
     m_IntakeSubsystem.setDefaultCommand(
         m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeStop()));
@@ -124,6 +125,7 @@ public class RobotContainer {
      */
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5)); // hiz ayar butonu
+    driverPS.R1().whileTrue(Commands.run(() -> turnSpeed = 0.4)); // hiz ayar butonu
 
     /*
      * 
@@ -170,6 +172,7 @@ public class RobotContainer {
      */
 
     driverPS.R1().onFalse(Commands.runOnce(() -> speed = 1.0));
+    driverPS.R1().onFalse(Commands.runOnce(() -> turnSpeed = 0.7));
   }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
