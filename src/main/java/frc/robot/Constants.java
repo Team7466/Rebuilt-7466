@@ -66,7 +66,6 @@ public final class Constants {
 
   public static class IntakeConstants {
     public static final int intakeMotor = 13; // CAN ID
-    public static final double intakeSpeed = 0.6;
   }
 
   public static class ShooterConstants {

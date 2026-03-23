@@ -60,9 +60,14 @@ public class ClimberSubsystem extends SubsystemBase {
     climberMotor.set(0.75);
   }
 
+  public double getClimbEncoder() {
+    return climbEncoder.getPosition();
+  }
+
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Climber", climbEncoder.getPosition());
+    SmartDashboard.putNumber("Climber", getClimbEncoder());
     SmartDashboard.putNumber("Climber Speed", climbEncoder.getVelocity());
     SmartDashboard.putNumber("Climber Motor Output", climberMotor.getAppliedOutput());
   }
