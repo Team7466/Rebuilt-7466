@@ -190,11 +190,6 @@ public class DriveSubsystem extends SubsystemBase {
         .closedLoopRampRate(0.25)
         .voltageCompensation(12.0);
 
-    leftFollowerConfig
-        .encoder
-        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
-        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
-
     leftFollowerConfig.alternateEncoder
         .setSparkMaxDataPortConfig()
         .countsPerRevolution(8192)
@@ -214,11 +209,6 @@ public class DriveSubsystem extends SubsystemBase {
         .openLoopRampRate(0.2)
         .closedLoopRampRate(0.25)
         .voltageCompensation(12.0);
-
-    rightFollowerConfig
-        .encoder
-        .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
-        .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
 
     rightFollowerConfig.alternateEncoder
         .setSparkMaxDataPortConfig()
