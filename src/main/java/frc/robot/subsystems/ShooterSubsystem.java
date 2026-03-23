@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
     leftConfig
           .encoder
             .uvwMeasurementPeriod(10)
-            .uvwAverageDepth(4);
+            .uvwAverageDepth(8);
             
     rightConfig.apply(leftConfig).follow(shooterMotorLeft, true);
   }

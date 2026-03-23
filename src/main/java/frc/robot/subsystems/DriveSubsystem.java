@@ -193,6 +193,8 @@ public class DriveSubsystem extends SubsystemBase {
     leftFollowerConfig.alternateEncoder
         .setSparkMaxDataPortConfig()
         .countsPerRevolution(8192)
+        .measurementPeriod(25)
+        .averageDepth(8)
         .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
         .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
@@ -213,6 +215,8 @@ public class DriveSubsystem extends SubsystemBase {
     rightFollowerConfig.alternateEncoder
         .setSparkMaxDataPortConfig()
         .countsPerRevolution(8192)
+        .measurementPeriod(25)
+        .averageDepth(8)
         .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
         .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
 
