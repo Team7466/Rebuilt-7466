@@ -95,7 +95,7 @@ public class RobotContainer {
      NamedCommands.registerCommand
         ("Shoot",
          new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 2750.0
-         )); // 
+         ).withTimeout(4.0)); // 
    
      NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
      NamedCommands.registerCommand(
