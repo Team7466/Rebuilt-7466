@@ -4,9 +4,15 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -52,10 +58,16 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   // Auto selector
-  SendableChooser<Command> m_chooser = new SendableChooser<>();
+  SendableChooser<Command> m_chooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    // Register named commands for PathPlanner
+    registerNamedCommands();
+
+    // Configure the trigger bindings
+    configureBindings();
 
     m_DriveSubsystem.setDefaultCommand(
         m_DriveSubsystem.driveCommand(
@@ -74,10 +86,24 @@ public class RobotContainer {
         m_shooterSubsystem.run(() -> m_shooterSubsystem.shooterStop()));
 
     // Setup auto chooser
-
-    // Configure the trigger bindings
-    configureBindings();
+    m_chooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", m_chooser);
   }
+
+    /** Register named commands for use with PathPlanner */
+  private void registerNamedCommands() { 
+     NamedCommands.registerCommand
+        ("Shoot",
+         new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 2750.0
+         )); // 
+   
+     NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
+     NamedCommands.registerCommand(
+        "runIntake",
+        m_IntakeSubsystem    
+            .run(() -> m_IntakeSubsystem.intake()));
+  }   
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
