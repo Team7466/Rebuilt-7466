@@ -95,7 +95,7 @@ public class RobotContainer {
   private void registerNamedCommands() { 
      NamedCommands.registerCommand
         ("Shoot",
-         new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 2750.0
+         new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2750.0
          ).withTimeout(4.0)); // 
    
      NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
@@ -147,7 +147,7 @@ public class RobotContainer {
     driverPS.L1().onTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(0.8)); // geri besleme
 
 
-    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, 2750.0)); // shooter ve feeder 
+    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2750.0)); // shooter ve feeder 
 
     driverPS.circle().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
     driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder

@@ -7,22 +7,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FeederSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ShootCommand extends Command {
   FeederSubsystem feederSubsystem;
   ShooterSubsystem shooterSubsystem;
+  IntakeSubsystem intakeSubsystem;
   boolean isFinished;
   double RPM;
 
   /** Creates a new ShootCommand. */
-  public ShootCommand(FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, double RPM) {
+  public ShootCommand(FeederSubsystem feederSubsystem, ShooterSubsystem shooterSubsystem, IntakeSubsystem intakeSubsystem, double RPM) {
+
     this.feederSubsystem = feederSubsystem;
     this.shooterSubsystem = shooterSubsystem;
+    this.intakeSubsystem = intakeSubsystem;
     this.RPM = RPM;
     // Use addRequirements() here to declare subsystem dependencies.
 
-    addRequirements(feederSubsystem, shooterSubsystem);
+    addRequirements(intakeSubsystem, feederSubsystem, shooterSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -39,6 +43,7 @@ public class ShootCommand extends Command {
 
     if (shooterSubsystem.isShooterAtSetpoint()) {
       feederSubsystem.feederShoot();
+      intakeSubsystem.intake();
     }
   }
 

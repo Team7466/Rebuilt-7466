@@ -60,7 +60,7 @@ public class FeederSubsystem extends SubsystemBase {
 
   public void feederIntake() {
 
-    feederMotor.set(0.95);
+    feederMotor.set(0.75);
   }
 
   public void feederStop() {
