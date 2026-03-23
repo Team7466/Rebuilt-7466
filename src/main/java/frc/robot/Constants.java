@@ -22,8 +22,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int leftMotor = 12; // CAN ID
-    public static final int leftFollower = 10; // CAN ID
+    public static final int leftMotor = 10; // CAN ID
+    public static final int leftFollower = 12; // CAN ID
     public static final int rightMotor = 17; // CAN ID
     public static final int rightFollower = 18; // CAN ID
 
