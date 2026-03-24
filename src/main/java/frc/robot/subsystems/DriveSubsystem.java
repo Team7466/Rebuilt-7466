@@ -196,7 +196,8 @@ public class DriveSubsystem extends SubsystemBase {
         .measurementPeriod(25)
         .averageDepth(8)
         .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
-        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0)
+        .inverted(true);
 
     leftFollowerConfig
         .signals
