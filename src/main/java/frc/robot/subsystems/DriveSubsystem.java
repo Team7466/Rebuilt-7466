@@ -8,9 +8,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -32,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -43,6 +48,8 @@ public class DriveSubsystem extends SubsystemBase {
   private final SparkMax rightMotorFollower;
   private final RelativeEncoder leftEncoder;
   private final RelativeEncoder rightEncoder;
+  private final SparkClosedLoopController leftController;
+  private final SparkClosedLoopController rightController;
   private final DifferentialDriveKinematics kinematics;
   private RobotConfig config;
   public DifferentialDrive robotDrive;
@@ -50,8 +57,9 @@ public class DriveSubsystem extends SubsystemBase {
   private SparkMaxConfig rightConfig;
   private SparkMaxConfig leftFollowerConfig;
   private SparkMaxConfig rightFollowerConfig;
-
+  private final Field2d m_field;
   public DriveSubsystem() {
+    m_field = new Field2d();
 
     kinematics = new DifferentialDriveKinematics(Constants.DriveConstants.trackWidthMeters);
 
@@ -72,8 +80,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     setConfigs();
     applyConfigs();
-    leftEncoder = leftMotorFollower.getAlternateEncoder();
-    rightEncoder = rightMotorFollower.getAlternateEncoder();
+    // Leaders now have the through bore encoders
+    leftEncoder = leftMotor.getAlternateEncoder();
+    rightEncoder = rightMotor.getAlternateEncoder();
+    leftController = leftMotor.getClosedLoopController();
+    rightController = rightMotor.getClosedLoopController();
 
     robotDrive = new DifferentialDrive(leftMotor, rightMotor);
     robotDrive.setSafetyEnabled(false);
@@ -114,6 +125,19 @@ public class DriveSubsystem extends SubsystemBase {
         },
         this // Reference to this subsystem to set requirements
         );
+     SmartDashboard.putData("Field", m_field);
+     // Show PathPlanner path and target pose on the field too
+      PathPlannerLogging.setLogCurrentPoseCallback((pose) -> m_field.setRobotPose(pose));
+      PathPlannerLogging.setLogTargetPoseCallback((pose) -> 
+          m_field.getObject("target pose").setPose(pose));
+      PathPlannerLogging.setLogActivePathCallback((poses) -> 
+          m_field.getObject("path").setPoses(poses));
+
+          // Wheel radius characterization inputs/outputs
+      SmartDashboard.putNumber("WheelChar/ActualDistanceMeters", 0.0);
+      SmartDashboard.putNumber("WheelChar/StartLeft", 0.0);
+      SmartDashboard.putNumber("WheelChar/StartRight", 0.0);
+      SmartDashboard.putString("WheelChar/Status", "Ready");
   }
 
   public Pose2d getPose() {
@@ -169,10 +193,38 @@ public class DriveSubsystem extends SubsystemBase {
         .closedLoopRampRate(0.25)
         .voltageCompensation(12.0);
 
+    // Built-in NEO encoder config (motor shaft, includes gear ratio) — kept in case we revert
     globalConfig
         .encoder
         .velocityConversionFactor(Constants.DriveConstants.velocityConversionFactor)
         .positionConversionFactor(Constants.DriveConstants.positionConversionFactor);
+
+    // Through bore alternate encoder (output shaft, no gear ratio)
+    globalConfig.alternateEncoder
+        .setSparkMaxDataPortConfig()
+        .countsPerRevolution(8192)
+        .measurementPeriod(25)
+        .averageDepth(8)
+        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
+        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0)
+        .inverted(true);
+
+    // Slot 0 — teleop: FF + kP for veering correction
+    // kP in duty cycle (REV PID output is duty cycle) — already /12 in Constants
+    // kS/kV in volts per REV docs
+    globalConfig.closedLoop
+        .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+        .pid(Constants.DriveConstants.kP, 0.0, 0.0, ClosedLoopSlot.kSlot0)
+        .feedForward
+            .kS(Constants.DriveConstants.kS, ClosedLoopSlot.kSlot0)
+            .kV(Constants.DriveConstants.kV, ClosedLoopSlot.kSlot0);
+
+    // Slot 1 — auto: FF only, kP = 0, let LTV controller handle pose correction
+    globalConfig.closedLoop
+        .pid(0.0, 0.0, 0.0, ClosedLoopSlot.kSlot1)
+        .feedForward
+            .kS(Constants.DriveConstants.kS, ClosedLoopSlot.kSlot1)
+            .kV(Constants.DriveConstants.kV, ClosedLoopSlot.kSlot1);
 
     globalConfig
         .signals
@@ -181,7 +233,9 @@ public class DriveSubsystem extends SubsystemBase {
         .appliedOutputPeriodMs(5);
 
     // Apply the global config and invert since it is on the opposite side
+    // Override alternateEncoder inversion — right encoder is not inverted
     rightConfig.apply(globalConfig).inverted(true);
+    rightConfig.alternateEncoder.inverted(false);
 
     leftFollowerConfig
         .smartCurrentLimit(46)
@@ -189,15 +243,6 @@ public class DriveSubsystem extends SubsystemBase {
         .openLoopRampRate(0.4)
         .closedLoopRampRate(0.25)
         .voltageCompensation(12.0);
-
-    leftFollowerConfig.alternateEncoder
-        .setSparkMaxDataPortConfig()
-        .countsPerRevolution(8192)
-        .measurementPeriod(25)
-        .averageDepth(8)
-        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
-        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0)
-        .inverted(true);
 
     leftFollowerConfig
         .signals
@@ -213,14 +258,6 @@ public class DriveSubsystem extends SubsystemBase {
         .closedLoopRampRate(0.25)
         .voltageCompensation(12.0);
 
-    rightFollowerConfig.alternateEncoder
-        .setSparkMaxDataPortConfig()
-        .countsPerRevolution(8192)
-        .measurementPeriod(25)
-        .averageDepth(8)
-        .positionConversionFactor(Constants.DriveConstants.wheelCircumference)
-        .velocityConversionFactor(Constants.DriveConstants.wheelCircumference / 60.0);
-
     rightFollowerConfig
         .signals
         .primaryEncoderPositionPeriodMs(20)
@@ -229,9 +266,16 @@ public class DriveSubsystem extends SubsystemBase {
     rightFollowerConfig.follow(rightMotor);
   }
 
-  /** drive method for pathplanner */
-  public void stop() {
+    public void stop() {
     robotDrive.arcadeDrive(0, 0);
+  }
+  /** drive method for pathplanner — slot 1, FF only, LTV handles pose correction */
+  public void drive(ChassisSpeeds speeds) {
+    DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
+    leftController.setSetpoint(
+        wheelSpeeds.leftMetersPerSecond, SparkMax.ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    rightController.setSetpoint(
+        wheelSpeeds.rightMetersPerSecond, SparkMax.ControlType.kVelocity, ClosedLoopSlot.kSlot1);
   }
 
   /**
@@ -248,13 +292,20 @@ public class DriveSubsystem extends SubsystemBase {
         });
   }
 
-  /** drive method for pathplanner */
-  public void drive(ChassisSpeeds speeds) {
-    robotDrive.arcadeDrive(
-        speeds.vxMetersPerSecond / Constants.DriveConstants.maxSpeed,
-        speeds.omegaRadiansPerSecond / Constants.DriveConstants.maxAngularVelocity);
-  }
+ public Command closedLoopDriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+    return run(
+        () -> {
+          var speeds = DifferentialDrive.arcadeDriveIK(
+              xSpeed.getAsDouble(), zRotation.getAsDouble(), true);
+          double leftMetersPerSec = speeds.left * Constants.DriveConstants.maxSpeed;
+          double rightMetersPerSec = speeds.right * Constants.DriveConstants.maxSpeed;
 
+          leftController.setSetpoint(
+              leftMetersPerSec, SparkMax.ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+          rightController.setSetpoint(
+              rightMetersPerSec, SparkMax.ControlType.kVelocity, ClosedLoopSlot.kSlot0);
+        });
+} 
   public Command getAutonomousCommand(String string) {
     return new PathPlannerAuto(string);
   }
@@ -276,18 +327,49 @@ public class DriveSubsystem extends SubsystemBase {
     rightMotor.setVoltage(voltage);
   }
 
+  /** Call when robot is at start position — records starting encoder values */
+public void wheelRadiusCharStart() {
+    SmartDashboard.putNumber("WheelChar/StartLeft", leftEncoder.getPosition());
+    SmartDashboard.putNumber("WheelChar/StartRight", rightEncoder.getPosition());
+    SmartDashboard.putString("WheelChar/Status", "Started — push robot forward, enter distance, then finish");
+}
+
+/** Call after pushing robot — reads actual distance from dashboard and prints result */
+public void wheelRadiusCharFinish() {
+    double startLeft = SmartDashboard.getNumber("WheelChar/StartLeft", 0.0);
+    double startRight = SmartDashboard.getNumber("WheelChar/StartRight", 0.0);
+    double actualMeters = SmartDashboard.getNumber("WheelChar/ActualDistanceMeters", 0.0);
+
+    double leftDelta = leftEncoder.getPosition() - startLeft;
+    double rightDelta = rightEncoder.getPosition() - startRight;
+    double encoderAvg = (leftDelta + rightDelta) / 2.0;
+
+    double correctionFactor = actualMeters / encoderAvg;
+    double correctedCircumference = Constants.DriveConstants.wheelCircumference * correctionFactor;
+    double correctedRadiusMeters = correctedCircumference / (2 * Math.PI);
+    double correctedRadiusInches = correctedRadiusMeters / 0.0254;
+
+    SmartDashboard.putNumber("WheelChar/CorrectedRadiusInches", correctedRadiusInches);
+    SmartDashboard.putNumber("WheelChar/CorrectedCircumference", correctedCircumference);
+    SmartDashboard.putNumber("WheelChar/CorrectionFactor", correctionFactor);
+    SmartDashboard.putString("WheelChar/Status", "Done!  wheelCircumference: " + correctedCircumference + "  wheelRadiusInches: " + correctedRadiusInches);
+}
+
   @Override
   public void periodic() {
     // Display the applied output of the left and right side onto the dashboard
+    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
     SmartDashboard.putNumber("LEFT 1 POWER", leftMotor.getAppliedOutput());
     SmartDashboard.putNumber("LEFT 2 POWER", leftMotorFollower.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT POWER", rightMotor.getAppliedOutput());
     SmartDashboard.putNumber("RIGHT 2 POWER", rightMotorFollower.getAppliedOutput());
-    SmartDashboard.putNumber("Left Speed m/s", leftEncoder.getVelocity());
-    SmartDashboard.putNumber("Right Speed m/s", rightEncoder.getVelocity());
+    SmartDashboard.putNumber("Left Speed m s", leftEncoder.getVelocity());
+    SmartDashboard.putNumber("Right Speed m s", rightEncoder.getVelocity());
     SmartDashboard.putNumber("navx", gyro.getYaw());
     SmartDashboard.putNumber("navx2", gyro.getRotation2d().getDegrees());
-    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
+    SmartDashboard.putNumber("Left Position m", leftEncoder.getPosition());
+    SmartDashboard.putNumber("Right Position m", rightEncoder.getPosition());
+    m_field.setRobotPose(getPose());
     // This method will be called once per scheduler run
   }
 }

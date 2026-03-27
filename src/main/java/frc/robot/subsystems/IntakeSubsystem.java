@@ -56,9 +56,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void intake() {
     intakeMotor.set(0.7);
   }
+
   public void shoot() {
     intakeMotor.set(0.3);
   }
+
   @Override
   public void periodic() {}
 }

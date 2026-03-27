@@ -74,6 +74,11 @@ public class RobotContainer {
         m_DriveSubsystem.driveCommand(
             () -> speed * -driverPS.getLeftY(), () -> turnSpeed * -driverPS.getRightX()));
 
+    // Cross — closed loop drive with FF + kP
+    driverPS.cross().whileTrue(
+        m_DriveSubsystem.closedLoopDriveCommand(
+            () -> speed * -driverPS.getLeftY(), () -> turnSpeed * -driverPS.getRightX()));
+
     m_IntakeSubsystem.setDefaultCommand(
         m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intakeStop()));
 
@@ -132,13 +137,15 @@ public class RobotContainer {
      * OPERATOR CONTROLS:
       L2: intake ve feeder birlikte turn on
       L1 : intake ve feeder birlikte turn off
-      R2 : shooter ve feeder birlikte 
-      X : shooter ve feeder birlikte (manuel pid yok)
+      R2 : shooter ve feeder birlikte   
+      X : veering correction drive
       DAIRE : sadece intake
       KARE : sadece feeder
       UCGEN : limelight ile hub'a hizalanma
       DPAD UP : climber up
       DPAD DOWN : climber down
+      DPAD LEFT : wheel radius characterization start
+      DPAD RIGHT : wheel radius characterization finish
      * 
      */
 
@@ -152,7 +159,7 @@ public class RobotContainer {
     driverPS.circle().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
     driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder
 
-    driverPS.cross().whileTrue(new ManualShootCommand(m_FeederSubsystem, m_shooterSubsystem)); // shooter ve feeder (manuel pid yok)
+   
 
 
     driverPS
@@ -165,6 +172,8 @@ public class RobotContainer {
 
 
     driverPS.triangle().whileTrue(new AlignToHubCommand(m_DriveSubsystem, m_LimelightSubsystem, true));
+    driverPS.povLeft().onTrue(Commands.runOnce(() -> m_DriveSubsystem.wheelRadiusCharStart()));
+    driverPS.povRight().onTrue(Commands.runOnce(() -> m_DriveSubsystem.wheelRadiusCharFinish()));
 
     /*
      * 

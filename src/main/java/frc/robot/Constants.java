@@ -22,23 +22,31 @@ public final class Constants {
   }
 
   public static class DriveConstants {
-    public static final int leftMotor = 10; // CAN ID
-    public static final int leftFollower = 12; // CAN ID
-    public static final int rightMotor = 17; // CAN ID
-    public static final int rightFollower = 18; // CAN ID
+    public static final int leftMotor = 12; // CAN ID — leader, has through bore encoder
+    public static final int leftFollower = 10; // CAN ID
+    public static final int rightMotor = 18; // CAN ID — leader, has through bore encoder
+    public static final int rightFollower = 17; // CAN ID
 
     public static final double trackWidthMeters = 0.5505; // meters
     public static final double gearRatio = 8.4586;
-    public static final double maxSpeed = 4.3; // meters per second
+    public static final double maxSpeed = 4.74; // meters per second
     public static final double maxAngularVelocity = 2.0 * maxSpeed / trackWidthMeters; // rad/s
 
     public static final double wheelCircumference = Units.inchesToMeters(6.0 * Math.PI);
+    // Built-in NEO encoder conversion factors (motor shaft — includes gear ratio)
+    // Kept in case we revert to hall sensor
     public static final double velocityConversionFactor =
         (1.0 / gearRatio) * (wheelCircumference) / 60.0;
     public static final double positionConversionFactor = (1.0 / gearRatio) * (wheelCircumference);
+
+    // Feedforward in volts (REV FF takes volts)
+    // kP in duty cycle divide ReCalc value by 12
+    public static final double kS = 0.0; // volts 
+    public static final double kV = 2.15; // V*s/m
+    public static final double kP = 2.57 /2 / 12.0; // duty cycle per (m/s) of error
   }
 
-  public static class LimelightConstants {
+  public static class LimelightConstants {  
     public static final String limelightName = "limelight";
     public static final int aprilTagPipeline = 0;
 
@@ -75,7 +83,7 @@ public final class Constants {
     public static final double kS = 0.0; // Volts, static gain
     public static final double kV = 0.00212; // Volts per RPM, velocity gain
     public static final double kA = 0.0; // Volts per (meter per second squared), acceleration gain
-    public static final double kP = 0.00050; // Proportional gain
+    public static final double kP = 0.00045; // Proportional gain
     public static final double kI = 0.0; // Integral gain
     public static final double kD = 0.0; // Derivative gain
     public static final double kF = 0.0; // Feedforward gain
