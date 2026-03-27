@@ -29,7 +29,7 @@ public final class Constants {
 
     public static final double trackWidthMeters = 0.5505; // meters
     public static final double gearRatio = 8.4586;
-    public static final double maxSpeed = 4.5; // meters per second
+    public static final double maxSpeed = 4.3; // meters per second
     public static final double maxAngularVelocity = 2.0 * maxSpeed / trackWidthMeters; // rad/s
 
     public static final double wheelCircumference = Units.inchesToMeters(6.0 * Math.PI);
@@ -75,7 +75,7 @@ public final class Constants {
     public static final double kS = 0.0; // Volts, static gain
     public static final double kV = 0.00212; // Volts per RPM, velocity gain
     public static final double kA = 0.0; // Volts per (meter per second squared), acceleration gain
-    public static final double kP = 0.00010; // Proportional gain
+    public static final double kP = 0.00050; // Proportional gain
     public static final double kI = 0.0; // Integral gain
     public static final double kD = 0.0; // Derivative gain
     public static final double kF = 0.0; // Feedforward gain

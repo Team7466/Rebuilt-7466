@@ -44,7 +44,7 @@ public class RobotContainer {
   LimelightSubsystem m_LimelightSubsystem = new LimelightSubsystem();
 
   private double speed = 1.0;
-  private double turnSpeed = 0.7;
+  private double turnSpeed = 0.62;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   // public static final CommandXboxController driverXbox =
@@ -94,9 +94,9 @@ public class RobotContainer {
     /** Register named commands for use with PathPlanner */
   private void registerNamedCommands() { 
      NamedCommands.registerCommand
-        ("Shoot",
-         new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2750.0
-         ).withTimeout(4.0)); // 
+        ("shoot",
+         new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2650.0
+         )); // 
    
      NamedCommands.registerCommand("climb", m_ClimberSubsystem.run(() -> m_ClimberSubsystem.climberSetSpeed(0.5)));
      NamedCommands.registerCommand(
@@ -125,7 +125,7 @@ public class RobotContainer {
      */
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5)); // hiz ayar butonu
-    driverPS.R1().whileTrue(Commands.run(() -> turnSpeed = 0.4)); // hiz ayar butonu
+    driverPS.R1().whileTrue(Commands.run(() -> turnSpeed = 0.5)); // hiz ayar butonu
 
     /*
      * 
@@ -147,7 +147,7 @@ public class RobotContainer {
     driverPS.L1().onTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake()).withTimeout(0.8)); // geri besleme
 
 
-    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2750.0)); // shooter ve feeder 
+    driverPS.R2().whileTrue(new ShootCommand(m_FeederSubsystem, m_shooterSubsystem, m_IntakeSubsystem, 2650.0)); // shooter ve feeder 
 
     driverPS.circle().whileTrue(m_IntakeSubsystem.run(() -> m_IntakeSubsystem.intake())); // sadece intake
     driverPS.square().whileTrue(m_FeederSubsystem.run(() -> m_FeederSubsystem.feederIntake())); // sadece feeder
