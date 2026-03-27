@@ -91,5 +91,16 @@ public final class Constants {
 
   public static class ClimberConstants {
     public static final int climberMotor = 11; // CAN ID
+
+    // Position PID — tune these on the robot
+    public static final double kP = 0.0009 ;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kMinOutput = -0.45;
+    public static final double kMaxOutput = 0.65;
+
+    // Soft limits in motor rotations — tune for your mechanism travel
+    public static final double forwardSoftLimit = 150.0;  // fully climbed
+    public static final double reverseSoftLimit = 0.0;    // fully retracted
   }
 }

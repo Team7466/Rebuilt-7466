@@ -130,7 +130,7 @@ public class RobotContainer {
      */
 
     driverPS.R1().whileTrue(Commands.run(() -> speed = 0.5)); // hiz ayar butonu
-    driverPS.R1().whileTrue(Commands.run(() -> turnSpeed = 0.5)); // hiz ayar butonu
+    driverPS.R1().whileTrue(Commands.run(() -> turnSpeed = 0.45)); // hiz ayar butonu
 
     /*
      * 
